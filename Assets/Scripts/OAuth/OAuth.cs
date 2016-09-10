@@ -608,15 +608,15 @@ namespace teruzuki.OAuth
 		}
 
 #if BROKEN
-        /// <summary>
-        ///   Return the oauth string that can be used in an Authorization
-        ///   header. All the oauth terms appear in the string, in alphabetical
-        ///   order.
-        /// </summary>
-        public string GetOAuthHeader()
-        {
-            return EncodeRequestParameters(this._params);
-        }
+		/// <summary>
+		///   Return the oauth string that can be used in an Authorization
+		///   header. All the oauth terms appear in the string, in alphabetical
+		///   order.
+		/// </summary>
+		public string GetOAuthHeader()
+		{
+			return EncodeRequestParameters(this._params);
+		}
 #endif
 		private static readonly DateTime _epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0);
 		private Dictionary<String, String> _params;
