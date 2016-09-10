@@ -18,7 +18,7 @@ namespace teruzuki
 			Twitter.Client.GetAccessToken(pin);
 			
 			Debug.Log(Twitter.Account.VerifyCredentials());
-			var tweets = Twitter.Statuses.HomeTimeline();
+			var tweets = Twitter.Statuses.MentionsTimeline(3);
 			var i = 0;
 			foreach(var tweet in tweets)
 			{
