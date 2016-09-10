@@ -18,6 +18,10 @@ namespace teruzuki
 			Twitter.Client.GetAccessToken(pin);
 			
 			Debug.Log(Twitter.Account.VerifyCredentials());
+
+            /*
+             * Test for Twitter.Statuses
+             * 
             var tweets = Twitter.Statuses.HomeTimeline();
             var i = 0;
 			foreach(var tweet in tweets)
@@ -28,6 +32,8 @@ namespace teruzuki
 				obj.transform.position = new Vector3(0, i * 2, 0);
 				++i;
 			}
-		}
+            */
+
+        }
 	}
 }
