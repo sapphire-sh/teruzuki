@@ -6,17 +6,28 @@ namespace teruzuki
 {
 	public class TwitterManager : MonoBehaviour
 	{
-		Twitter.Client Client;
+		public GameObject tweetPrefab;
 
 		void Start()
 		{
-			Client = Twitter.Client.Instance;
-			Application.OpenURL(Client.GetRequestToken());
+			Application.OpenURL(Twitter.Client.GetRequestToken());
 		}
 
 		public void GetAccessToken(string pin)
 		{
-			Client.GetAccessToken(pin);
+			Twitter.Client.GetAccessToken(pin);
+			
+			Debug.Log(Twitter.Account.VerifyCredentials());
+			var tweets = Twitter.Statuses.HomeTimeline();
+			var i = 0;
+			foreach(var tweet in tweets)
+			{
+				var obj = Instantiate(tweetPrefab);
+				var mesh = obj.GetComponent<TextMesh>();
+				mesh.text = tweet.text;
+				obj.transform.position = new Vector3(0, i * 2, 0);
+				++i;
+			}
 		}
 	}
 }

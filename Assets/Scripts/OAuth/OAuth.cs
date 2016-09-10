@@ -646,8 +646,7 @@ namespace teruzuki.OAuth
 				return _params[ix];
 			}
 		}
-
-
+		
 		public OAuthResponse(string alltext)
 		{
 			AllText = alltext;

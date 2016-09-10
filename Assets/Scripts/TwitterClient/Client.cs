@@ -33,21 +33,18 @@ namespace teruzuki.Twitter
 			oauth["consumer_secret"] = "7fNW3QITGNFQAisvtkk8yaHdXkx5j7mxM2rEJShUeqxbwZEDHZ";
 		}
 
-		public string GetRequestToken()
+		public static string GetRequestToken()
 		{
-			var res = oauth.AcquireRequestToken("https://api.twitter.com/oauth/request_token", "POST");
+			var res = Instance.oauth.AcquireRequestToken("https://api.twitter.com/oauth/request_token", "POST");
 			return "https://api.twitter.com/oauth/authenticate?oauth_token=" + res["oauth_token"];
 		}
 
-		public void GetAccessToken(string pin)
+		public static void GetAccessToken(string pin)
 		{
-			var res = oauth.AcquireAccessToken("https://api.twitter.com/oauth/access_token", "POST", pin);
-			
-			oauth["token"] = res["oauth_token"];
-			oauth["token_secret"] = res["oauth_token_secret"];
+			var res = Instance.oauth.AcquireAccessToken("https://api.twitter.com/oauth/access_token", "POST", pin);
 
-			Debug.Log(Account.VerifyCredentials());
-			Debug.Log(Statuses.MentionsTimeline());
+			Instance.oauth["token"] = res["oauth_token"];
+			Instance.oauth["token_secret"] = res["oauth_token_secret"];
 		}
 
 		public string Get(string url)
