@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="io.fabric.sdk.android.unity">
+  <application>
+    <meta-data android:name="io.fabric.ApiKey" android:value="ae1f1b8437540ad1d0dba58e2f2e1e179cb97b50" />
+    <meta-data android:name="io.fabric.unity.crashlytics.version" android:value="1.1.0" />
+    <meta-data android:name="io.fabric.crashlytics.qualified" android:value="com.crashlytics.android.Crashlytics" />
+    <meta-data android:name="io.fabric.crashlytics.unqualified" android:value="Crashlytics" />
+    <meta-data android:name="io.fabric.twittercore.key" android:value="OcbDuSiWrHYWU2RFgdWyV61F8" />
+    <meta-data android:name="io.fabric.twittercore.secret" android:value="7fNW3QITGNFQAisvtkk8yaHdXkx5j7mxM2rEJShUeqxbwZEDHZ" />
+    <meta-data android:name="io.fabric.twittercore.qualified" android:value="com.twitter.sdk.android.core.TwitterCore" />
+    <meta-data android:name="io.fabric.twittercore.unqualified" android:value="TwitterCore" />
+    <meta-data android:name="io.fabric.tweetcomposer.qualified" android:value="com.twitter.sdk.android.tweetcomposer.TweetComposer" />
+    <meta-data android:name="io.fabric.tweetcomposer.unqualified" android:value="TweetComposer" />
+    <meta-data android:name="io.fabric.kits" android:value="crashlytics,twittercore,tweetcomposer" />
+  </application>
+</manifest>
