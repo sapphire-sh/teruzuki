@@ -1,22 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using akizuki;
 
 namespace teruzuki
 {
     public class TwitterManager : MonoBehaviour
     {
+		TwitterClient Client;
+
         void Start()
         {
-            Akizuki akizuki = new Akizuki();
-            Debug.Log(Akizuki.Test());
+			Client = new TwitterClient();
+			Client.GetRequestToken();
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
+		public void GetAccessToken(string pin)
+		{
+			Client.GetAccessToken(pin);
+		}
     }
 }
