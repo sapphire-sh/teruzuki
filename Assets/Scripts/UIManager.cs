@@ -10,9 +10,9 @@ namespace teruzuki
 
 		void OnGUI()
 		{
-			pin = GUI.TextField(new Rect(10, 10, 200, 20), pin);
+			pin = GUI.TextField(new Rect(10, 10, 400, 40), pin);
 
-			if(GUI.Button(new Rect(10, 70, 50, 30), "Submit"))
+			if(GUI.Button(new Rect(10, 60, 400, 40), "Submit"))
 			{
 				var manager = FindObjectOfType<TwitterManager>();
 				manager.GetAccessToken(pin);
