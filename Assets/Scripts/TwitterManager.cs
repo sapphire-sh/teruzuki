@@ -11,7 +11,7 @@ namespace teruzuki
         void Start()
         {
 			Client = new TwitterClient();
-			Client.GetRequestToken();
+			Application.OpenURL(Client.GetRequestToken());
         }
 
 		public void GetAccessToken(string pin)
