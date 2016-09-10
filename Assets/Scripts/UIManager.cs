@@ -6,7 +6,7 @@ namespace teruzuki
 {
 	public class UIManager : MonoBehaviour
 	{
-		public string pin = "";
+		private string pin = "";
 
 		void OnGUI()
 		{

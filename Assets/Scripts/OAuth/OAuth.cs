@@ -9,7 +9,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
-namespace teruzuki
+namespace teruzuki.OAuth
 {
 	public class Manager
 	{

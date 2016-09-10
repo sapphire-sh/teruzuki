@@ -6,11 +6,11 @@ namespace teruzuki
 {
     public class TwitterManager : MonoBehaviour
     {
-		TwitterClient Client;
+		Twitter.Client Client;
 
         void Start()
         {
-			Client = new TwitterClient();
+			Client = Twitter.Client.Instance;
 			Application.OpenURL(Client.GetRequestToken());
         }
 

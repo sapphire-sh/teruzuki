@@ -6,15 +6,29 @@ using System.Security.Cryptography;
 using System.IO;
 using UnityEngine;
 
-namespace teruzuki
+namespace teruzuki.Twitter
 {
-	public class TwitterClient
+	public class Client
 	{
-		private Manager oauth;
+		private static Client instance;
 
-		public TwitterClient()
+		private OAuth.Manager oauth;
+
+		public static Client Instance
 		{
-			oauth = new Manager();
+			get
+			{
+				if(instance == null)
+				{
+					instance = new Client();
+				}
+				return instance;
+			}
+		}
+
+		private Client()
+		{
+			oauth = new OAuth.Manager();
 			oauth["consumer_key"] = "OcbDuSiWrHYWU2RFgdWyV61F8";
 			oauth["consumer_secret"] = "7fNW3QITGNFQAisvtkk8yaHdXkx5j7mxM2rEJShUeqxbwZEDHZ";
 		}
@@ -32,23 +46,19 @@ namespace teruzuki
 			oauth["token"] = res["oauth_token"];
 			oauth["token_secret"] = res["oauth_token_secret"];
 
-			var url = "https://api.twitter.com/1.1/account/verify_credentials.json";
-			var header = oauth.GenerateAuthzHeader(url, "GET");
-
-			Debug.Log(Get(url, header));
+			Debug.Log(Account.VerifyCredentials());
+			Debug.Log(Statuses.MentionsTimeline());
 		}
 
-		public string Get(string requestUri, string authHeaders)
+		public string Get(string url)
 		{
-			HttpWebRequest req = (HttpWebRequest)WebRequest.Create(requestUri);
+			HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
 
 			req.Method = "GET";
 			req.ServicePoint.Expect100Continue = false;
 			req.ContentType = "x-www-form-urlencoded";
 
-			req.Headers["Authorization"] = authHeaders;
-
-
+			req.Headers["Authorization"] = oauth.GenerateAuthzHeader(url, "GET");
 
 			HttpWebResponse res = (HttpWebResponse)req.GetResponse();
 
