@@ -8,6 +8,7 @@ using System.IO;
 using UnityEngine;
 using System.Text;
 
+using Newtonsoft.Json;
 
 namespace teruzuki.Twitter
 {
@@ -68,14 +69,16 @@ namespace teruzuki.Twitter
                 return value;
             }
         }
-        public string BuildURL(string baseurl, string key, string value)
+
+
+        private static string BuildUrl(string baseurl, string key, string value)
         {
             NameValueCollection parameter = new NameValueCollection();
             parameter.Add(key, value);
-            return this.BuildURL(baseurl, parameter);
+            return BuildUrl(baseurl, parameter);
         }
 
-        public string BuildURL(string baseurl, NameValueCollection parameters)
+        private static string BuildUrl(string baseurl, NameValueCollection parameters)
         {
             StringBuilder q = new StringBuilder();
 
@@ -90,5 +93,35 @@ namespace teruzuki.Twitter
             return baseurl + q.ToString();
         }
 
+        public static string GetApiUrl(string path, NameValueCollection parameters)
+        {
+            string baseurl = "https://api.twitter.com/1.1/" + path + ".json";
+            return BuildUrl(baseurl, parameters);
+        }
+
+        public static List<Tweet> GetTweets(string path, NameValueCollection parameters)
+        {
+            string url = GetApiUrl(path, parameters);
+            return JsonConvert.DeserializeObject<List<Tweet>>(Client.Instance.Get(url));
+        }
+
+        public static Tweet GetTweet(string path, NameValueCollection parameters)
+        {
+            string url = GetApiUrl(path, parameters);
+            Debug.Log(url);
+            return JsonConvert.DeserializeObject<Tweet>(Client.Instance.Get(url));
+        }
+
+        public static List<User> GetUsers(string path, NameValueCollection parameters)
+        {
+            string url = Client.GetApiUrl(path, parameters);
+            return JsonConvert.DeserializeObject<List<User>>(Client.Instance.Get(url));
+        }
+
+        public static User GetUser(string path, NameValueCollection parameters)
+        {
+            string url = Client.GetApiUrl(path, parameters);
+            return JsonConvert.DeserializeObject<User>(Client.Instance.Get(url));
+        }
     }
 }

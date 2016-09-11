@@ -18,22 +18,17 @@ namespace teruzuki
 			Twitter.Client.GetAccessToken(pin);
 			
 			Debug.Log(Twitter.Account.VerifyCredentials());
-
-            /*
-             * Test for Twitter.Statuses
-             * 
-            var tweets = Twitter.Statuses.HomeTimeline();
+            
+            var users = Twitter.Users.Search("KOINICHI");
             var i = 0;
-			foreach(var tweet in tweets)
-			{
-				var obj = Instantiate(tweetPrefab);
-				var mesh = obj.GetComponent<TextMesh>();
-				mesh.text = tweet.text;
-				obj.transform.position = new Vector3(0, i * 2, 0);
-				++i;
-			}
-            */
-
+            foreach (var user in users)
+            {
+                var obj = Instantiate(tweetPrefab);
+                var mesh = obj.GetComponent<TextMesh>();
+                mesh.text = user.name + " " + user.id_str;
+                obj.transform.position = new Vector3(0, i * 2, 0);
+                ++i;
+            }
         }
-	}
+    }
 }

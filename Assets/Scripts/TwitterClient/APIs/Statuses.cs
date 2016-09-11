@@ -10,24 +10,8 @@ namespace teruzuki.Twitter
 {
 	public static class Statuses
 	{
-        private static string getUrl(string path, NameValueCollection parameters)
-        {
-            string baseurl = "https://api.twitter.com/1.1/" + path + ".json";
-            return Client.Instance.BuildURL(baseurl, parameters);
-        }
 
-        private static List<Tweet> GetTimeline(string path, NameValueCollection parameters)
-        {
-            string url = getUrl(path, parameters);
-            return JsonConvert.DeserializeObject<List<Tweet>>(Client.Instance.Get(url));
-        }
-        private static Tweet GetTweet(string path, NameValueCollection parameters)
-        {
-            string url = getUrl(path, parameters);
-            return JsonConvert.DeserializeObject<Tweet>(Client.Instance.Get(url));
-        }
-
-        private static NameValueCollection GetTimelineDefaultParameters(int count = 0, long since_id = 0, long max_id = 0)
+        private static NameValueCollection GetTimelineCommonParameters(int count, long since_id, long max_id)
         {
             NameValueCollection parameters = new NameValueCollection();
             if (count > 0)
@@ -42,55 +26,75 @@ namespace teruzuki.Twitter
 
         public static List<Tweet> MentionsTimeline(int count = 0, long since_id = 0, long max_id = 0)
         {
-            NameValueCollection parameters = GetTimelineDefaultParameters(count, since_id, max_id);
-            return GetTimeline("statuses/mentions_timeline", parameters);
+            NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
+            return Client.GetTweets("statuses/mentions_timeline", parameters);
         }
 
         public static List<Tweet> UserTimeline(long user_id, int count = 0, long since_id = 0, long max_id = 0)
         {
-            NameValueCollection parameters = GetTimelineDefaultParameters(count, since_id, max_id);
+            NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
             parameters.Add("user_id", user_id.ToString());
-            return GetTimeline("statuses/user_timeline", parameters);
+            return Client.GetTweets("statuses/user_timeline", parameters);
         }
 
         public static List<Tweet> UserTimeline(string screen_name, int count = 0, long since_id = 0, long max_id = 0)
         {
-            NameValueCollection parameters = GetTimelineDefaultParameters(count, since_id, max_id);
+            NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
             parameters.Add("screen_name", screen_name);
-            return GetTimeline("statuses/user_timeline", parameters);
+            return Client.GetTweets("statuses/user_timeline", parameters);
         }
 
         public static List<Tweet> HomeTimeline(int count = 0, long since_id = 0, long max_id = 0)
         {
-            NameValueCollection parameters = GetTimelineDefaultParameters(count, since_id, max_id);
-            return GetTimeline("statuses/home_timeline", parameters);
+            NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
+            return Client.GetTweets("statuses/home_timeline", parameters);
         }
 
         public static List<Tweet> RetweetsOfMe(int count = 0, long since_id = 0, long max_id = 0)
         {
-            NameValueCollection parameters = GetTimelineDefaultParameters(count, since_id, max_id);
-            return GetTimeline("statuses/retweets_of_me", parameters);
+            NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
+            return Client.GetTweets("statuses/retweets_of_me", parameters);
         }
 
         public static List<Tweet> Retweets(long id, int count = 0)
         {
-            NameValueCollection parameters = GetTimelineDefaultParameters(count, 0, 0);
+            NameValueCollection parameters = GetTimelineCommonParameters(count, 0, 0);
             parameters.Add("id", id.ToString());
-            return GetTimeline("statuses/retweets", parameters);
+            return Client.GetTweets("statuses/retweets", parameters);
         }
 
         public static Tweet Show(long id)
         {
             NameValueCollection parameters = new NameValueCollection();
             parameters.Add("id", id.ToString());
-            return GetTweet("statuses/show", parameters);
+            return Client.GetTweet("statuses/show", parameters);
+        }
+
+        public static List<Tweet> Lookup(ICollection<long> id)
+        {
+            NameValueCollection parameters = new NameValueCollection();
+            parameters.Add("id", String.Join("%2C", id.ToArray().Select(i => i.ToString()).ToArray()));
+            return Client.GetTweets("statuses/lookup", parameters);
         }
 
 
         /*
-         * Not yet implemeted
+         * Is this what we want?
          * 
-         * GET statuses/retweeters/ids - require User model
+        public static List<User> Retweeters(long id, long cursor = -1)
+        {
+            NameValueCollection parameters = new NameValueCollection();
+            parameters.Add("id", id.ToString());
+            parameters.Add("cursor", cursor.ToString());
+            parameters.Add("stringify_ids", "true");
+
+            string url = Client.GetApiUrl("statuses/retweeters", parameters);
+            // JsonConvert.DeserializeObject<User>(Client.Instance.Get(url));
+        }
+        */
+
+        /*
+         * Not yet implemeted
          * 
          * POST statuses/destroy/:id - require POST function
          * POST statuses/update - require POST function
@@ -103,7 +107,6 @@ namespace teruzuki.Twitter
          * Probably won't implement
          * 
          * GET statuses/oembed - Do we need this for real...?
-         * GET statuses/lookup - Getting 401 for some reason
          */
     }
 }
