@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
+using teruzuki.Twitter.Model;
 
 using Newtonsoft.Json;
 
-namespace teruzuki.Twitter
+namespace teruzuki.Twitter.API
 {
     public static class Users
     {

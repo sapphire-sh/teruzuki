@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace teruzuki.Twitter
+namespace teruzuki.Twitter.Model
 {
     public class User
     {
