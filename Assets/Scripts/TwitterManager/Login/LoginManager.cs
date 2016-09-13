@@ -9,6 +9,7 @@ namespace teruzuki
 	{
 		void Start ()
 		{
+			Debug.Log("LoginManager Start");
 			SessionManager.Instance.LoadSession ();
 			Debug.Log (SessionManager.Instance.SessionList.Count);
 			if (SessionManager.Instance.SessionList.Count > 0) {

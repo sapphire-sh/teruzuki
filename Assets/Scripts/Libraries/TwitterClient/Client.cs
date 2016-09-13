@@ -9,6 +9,8 @@ using UnityEngine;
 using System.Text;
 
 using Newtonsoft.Json;
+using System.Security.Cryptography.X509Certificates;
+using System.Net.Security;
 
 namespace teruzuki.Twitter
 {
@@ -75,6 +77,36 @@ namespace teruzuki.Twitter
 			}
 		}
 
+		private bool ServerCertificateValidationCallback(object sender, X509Certificate certificate, X509Chain chain, SslPolicyErrors sslPolicyErrors)
+		{
+			return true;
+		}
+
+		/*
+		 * THIS DOES NOT WORK Q_Q
+		 */ 
+		public string Post(string url)
+		{
+			ServicePointManager.ServerCertificateValidationCallback = ServerCertificateValidationCallback;
+
+			HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
+			
+			req.Method = "POST";
+			req.UserAgent = "teruzuki";
+			req.ServicePoint.Expect100Continue = false;
+			req.ContentType = "application/x-www-form-urlencoded";
+
+			req.Headers["Authorization"] = oauth.GenerateAuthzHeader(url, "POST");
+
+			HttpWebResponse res = (HttpWebResponse)req.GetResponse();
+
+			using (var reader = new StreamReader(res.GetResponseStream()))
+			{
+				string value = reader.ReadToEnd();
+				return value;
+			}
+		}
+
 
 		private static string BuildUrl(string baseurl, string key, string value)
 		{
@@ -92,7 +124,7 @@ namespace teruzuki.Twitter
 				q.Append((q.Length == 0) ? '?' : '&');
 				q.Append(key);
 				q.Append('=');
-				q.Append(parameters[key]);
+				q.Append(WWW.EscapeURL(parameters[key]));
 			}
 
 			return baseurl + q.ToString();
@@ -107,26 +139,32 @@ namespace teruzuki.Twitter
 		public static List<Model.Tweet> GetTweets(string path, NameValueCollection parameters)
 		{
 			string url = GetApiUrl(path, parameters);
-			return JsonConvert.DeserializeObject<List<Model.Tweet>>(Client.Instance.Get(url));
+			return JsonConvert.DeserializeObject<List<Model.Tweet>>(Instance.Get(url));
 		}
 
 		public static Model.Tweet GetTweet(string path, NameValueCollection parameters)
 		{
 			string url = GetApiUrl(path, parameters);
 			Debug.Log(url);
-			return JsonConvert.DeserializeObject<Model.Tweet>(Client.Instance.Get(url));
+			return JsonConvert.DeserializeObject<Model.Tweet>(Instance.Get(url));
 		}
 
 		public static List<Model.User> GetUsers(string path, NameValueCollection parameters)
 		{
 			string url = Client.GetApiUrl(path, parameters);
-			return JsonConvert.DeserializeObject<List<Model.User>>(Client.Instance.Get(url));
+			return JsonConvert.DeserializeObject<List<Model.User>>(Instance.Get(url));
 		}
 
 		public static Model.User GetUser(string path, NameValueCollection parameters)
 		{
 			string url = Client.GetApiUrl(path, parameters);
-			return JsonConvert.DeserializeObject<Model.User>(Client.Instance.Get(url));
+			return JsonConvert.DeserializeObject<Model.User>(Instance.Get(url));
+		}
+
+		public static Model.DirectMessage PostDirectMessage(string path, NameValueCollection parameters)
+		{
+			string url = Client.GetApiUrl(path, parameters);
+			return JsonConvert.DeserializeObject<Model.DirectMessage>(Instance.Post(url));
 		}
 	}
 }

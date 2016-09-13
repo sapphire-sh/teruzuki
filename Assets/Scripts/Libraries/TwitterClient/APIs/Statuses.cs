@@ -11,7 +11,6 @@ namespace teruzuki.Twitter.API
 {
 	public static class Statuses
 	{
-
 		private static NameValueCollection GetTimelineCommonParameters(int count, long since_id, long max_id)
 		{
 			NameValueCollection parameters = new NameValueCollection();
