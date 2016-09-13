@@ -15,9 +15,9 @@ namespace teruzuki
 			for (int i = 0; i < tweets.Count; ++i) {
 				var tweet = tweets [i];
 				var obj = Instantiate(tweetPrefab);
-				var mesh = obj.GetComponent<TextMesh>();
+				var mesh = obj.GetComponentInChildren<TextMesh>();
 				mesh.text = tweet.text;
-				obj.transform.position = new Vector3(0, i * 2, 0);
+				obj.transform.position = new Vector3(0, 5 + i, 0);
 				++i;
 			}
 		}
