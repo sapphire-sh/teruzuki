@@ -58,6 +58,11 @@ namespace teruzuki.Twitter
 			};
 		}
 
+		public void SetAccessToken(Account session) {
+			Instance.oauth["token"] = session.AccessToken;
+			Instance.oauth ["token_secret"] = session.AccessTokenSecret;
+		}
+
 		public string Get(string url)
 		{
 			HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);

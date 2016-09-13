@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace teruzuki
 {
-	public class TwitterManager : MonoBehaviour
+	public class TestManager : MonoBehaviour
 	{
 		public GameObject tweetPrefab;
 
@@ -35,5 +35,5 @@ namespace teruzuki
 			}
 			*/
 		}
-    }
+	}
 }

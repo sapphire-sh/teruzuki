@@ -39,6 +39,8 @@ namespace teruzuki
 				FileStream fileStream = File.Open (Application.persistentDataPath + "/" + FILE_NAME, FileMode.Open);
 				SessionList = (List<Account>)binaryFormatter.Deserialize (fileStream);
 				fileStream.Close ();
+
+				Client.Instance.SetAccessToken (SessionList [0]);
 			}
 		}
 
