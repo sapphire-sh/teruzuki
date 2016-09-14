@@ -11,11 +11,12 @@ namespace teruzuki.Twitter
 
 			private static string BASE_URL { get { return string.Format("{0}://{1}/", PROTOCOL, HOSTNAME); } }
 
-			public static string OAUTH_API { get { return string.Format("{0}{1}/", BASE_URL, "oauth"); } }
-
 			public static string BuildURL(string endpoint) {
 				return string.Format("{0}{1}/{2}.json", BASE_URL, VERSION, endpoint);
 			}
+
+			public static readonly string REQUEST_TOKEN = "https://api.twitter.com/oauth/request_token";
+			public static readonly string ACCESS_TOKEN = "https://api.twitter.com/oauth/access_token";
 		}
 
 		public static class Session {

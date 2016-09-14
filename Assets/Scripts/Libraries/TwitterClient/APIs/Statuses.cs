@@ -1,25 +1,24 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
+
 using teruzuki.Twitter.Model;
 
 namespace teruzuki.Twitter.API
 {
 	public class Statuses
 	{
-		private static NameValueCollection GetTimelineCommonParameters(int count, long since_id, long max_id)
-		{
-			NameValueCollection parameters = new NameValueCollection();
-			if (count > 0)
-				parameters.Add("count", count.ToString());
-			if (since_id > 0)
-				parameters.Add("since_id", since_id.ToString());
-			if (max_id > 0)
-				parameters.Add("max_id", max_id.ToString());
-			return parameters;
-		}
+//		private static NameValueCollection GetTimelineCommonParameters(int count, long since_id, long max_id)
+//		{
+//			NameValueCollection parameters = new NameValueCollection();
+//			if (count > 0)
+//				parameters.Add("count", count.ToString());
+//			if (since_id > 0)
+//				parameters.Add("since_id", since_id.ToString());
+//			if (max_id > 0)
+//				parameters.Add("max_id", max_id.ToString());
+//			return parameters;
+//		}
 
 //		public void MentionsTimeline(int count = 0, long since_id = 0, long max_id = 0)
 //		{
@@ -92,9 +91,15 @@ namespace teruzuki.Twitter.API
 		/*
 			* Not yet implemeted
 			* 
-			* POST statuses/destroy/:id - require POST function
-			* POST statuses/update - require POST function
-			* POST statuses/retweet/:id - require POST function
+			* POST statuses/destroy/:id - require POST function */
+
+		public static IEnumerator Update (TwitterClient client, Action<string> callback)
+		{
+			var dict = new Dictionary<string, string> ();
+			dict.Add ("status", "test");
+			yield return client.POST<string> (Constants.URL.BuildURL ("statuses/update"), dict, callback);
+		}
+			/* POST statuses/retweet/:id - require POST function
 			* POST statuses/unretweet/:id - require POST function
 			* POST statuses/update_with_media - require POST function
 			*/

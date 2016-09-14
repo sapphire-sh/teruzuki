@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.Security.Cryptography;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using UnityEngine;
@@ -26,19 +27,41 @@ namespace teruzuki.Twitter
 			oauth["consumer_secret"] = "7fNW3QITGNFQAisvtkk8yaHdXkx5j7mxM2rEJShUeqxbwZEDHZ";
 		}
 
-		public string GetRequestToken()
-		{
-			var res = oauth.AcquireRequestToken("https://api.twitter.com/oauth/request_token", "POST");
+		public IEnumerator AcquireRequestToken(Action<string> callback) {
+			Dictionary<string, string> headers = new Dictionary<string, string> ();
+			headers.Add ("Authorization", oauth.GenerateAuthzHeader (Constants.URL.REQUEST_TOKEN, "POST"));
 
-			return "https://api.twitter.com/oauth/authenticate?oauth_token=" + res["oauth_token"];
+			WWWForm wwwForm = new WWWForm ();
+			wwwForm.AddField ("", "");
+
+			WWW www = new WWW (Constants.URL.REQUEST_TOKEN, wwwForm.data, headers);
+			yield return www;
+
+			Debug.Log (www.text);
+			var query = Helper.ParseQueryString (www.text);
+			Debug.Log (query ["oauth_token"]);
+
+			callback (string.Format ("https://api.twitter.com/oauth/authenticate?oauth_token={0}", query ["oauth_token"]));
 		}
 
-		public void GetAccessToken(string pin)
-		{
-			var res = oauth.AcquireAccessToken("https://api.twitter.com/oauth/access_token", "POST", pin);
+		public IEnumerator AcquireAccessToken(string pin, Action callback) {
+			Dictionary<string, string> headers = new Dictionary<string, string> ();
+			headers.Add ("Authorization", oauth.GetAuthorizationHeader (Constants.URL.ACCESS_TOKEN, "POST"));
 
-			oauth["token"] = res["oauth_token"];
-			oauth["token_secret"] = res["oauth_token_secret"];
+			WWWForm wwwForm = new WWWForm ();
+			wwwForm.AddField ("verifier", pin);
+
+			Debug.Log (pin);
+
+			WWW www = new WWW (Constants.URL.ACCESS_TOKEN, wwwForm.data, headers);
+			yield return www;
+
+			Debug.Log (www.text);
+
+			oauth ["token"] = "529303031-r6pg2cDNgy05auwc0SSUpgJxiPfRbKnJbXl0X8ub";
+			oauth ["token_secret"] = "5G2TBnaGJcJL5svCBIxP3YBWCJGS9Zrq5lWZOgvFkRdNj";
+
+			callback ();
 		}
 
 		public IEnumerator GET<T>(string url, Action<T> callback)
@@ -46,29 +69,29 @@ namespace teruzuki.Twitter
 			Dictionary<string, string> headers = new Dictionary<string, string> ();
 			headers.Add("Authorization", oauth.GenerateAuthzHeader(url, "GET"));
 
-			WWW www = new WWW ("http://sapphire.sh:3000/", null, headers);
+			WWW www = new WWW (url, null, headers);
 			yield return www;
 
-			Debug.Log (www.text);
 			callback (JsonMapper.ToObject<T>(www.text));
 		}
 
-		public IEnumerator POST<T>(string url, Action<T> callback) {
+		public IEnumerator POST<T>(string url, Dictionary<string, string> query, Action<T> callback) {
 			Dictionary<string, string> headers = new Dictionary<string, string> ();
-			headers.Add ("Authorization", oauth.GetAuthorizationHeader (url, "POST"));//oauth.GenerateAuthzHeader (url, "POST"));
+			headers.Add ("Authorization", oauth.GenerateAuthzHeader (url, "POST"));
+
 			Debug.Log (headers ["Authorization"]);
 
 			WWWForm wwwForm = new WWWForm ();
-			wwwForm.AddField ("status", "test");
+			foreach (var pair in query) {
+				wwwForm.AddField (pair.Key, pair.Value);
+			}
+
 			WWW www = new WWW (url, wwwForm.data, headers);
-			//WWW www = new WWW ("http://sapphire.sh:3000/", wwwForm.data, headers);
 			yield return www;
 
 			Debug.Log (www.text);
-			Debug.Log (www.url);
 
-			callback ((T)(object)www.text);
-			//callback (JsonMapper.ToObject<T>(www.text));
+			callback (JsonMapper.ToObject<T>(www.text));
 		}
 
 		private static string BuildUrl(string baseurl, string key, string value)

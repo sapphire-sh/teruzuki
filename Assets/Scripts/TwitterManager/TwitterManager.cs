@@ -12,13 +12,9 @@ namespace teruzuki
 		public GameObject tweetPrefab;
 
 		void Start() {
-			if (SessionManager.Instance.SessionList.Count == 0) {
+			if (ClientManager.Instance.ClientList.Count == 0) {
 				SceneManager.LoadScene ("login");
 			}
-		}
-
-		public void SendTweet(string status) {
-			
 		}
 
 		void OnGUI() {
@@ -29,14 +25,10 @@ namespace teruzuki
 //			if(GUI.Button(new Rect(10, Screen.height - 50, 200, 40), "MentionsTimeline")) {
 //				FetchMentionsTimeline ();
 //			}
-//
-//			if (GUI.Button (new Rect (Screen.width - 210, Screen.height - 50, 200, 40), "Compose Tweet")) {
-//				ComposeTweet ();
-//			}
-		}
 
-		private void Log(string str) {
-			Debug.Log (str);
+			if (GUI.Button (new Rect (Screen.width - 210, Screen.height - 50, 200, 40), "Compose Tweet")) {
+				ComposeTweet ();
+			}
 		}
 
 //		private void FetchHomeTimeline()
@@ -68,9 +60,12 @@ namespace teruzuki
 //			}
 //		}
 
-//		private void ComposeTweet() {
-//			var s = new Twitter.API.Statuses ();
-//			StartCoroutine (Twitter.Client.Instance.POST ("https://api.twitter.com/1.1/statuses/update.json", Log));
-//		}
+		private void ComposeTweet() {
+			StartCoroutine (Twitter.API.Statuses.Update (ClientManager.Instance.CurrentClient, ComposeTweetCallback));
+		}
+
+		private void ComposeTweetCallback(string res) {
+			Debug.Log (res);
+		}
     }
 }
