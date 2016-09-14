@@ -1,49 +1,31 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using teruzuki.Twitter.Model;
 
-using Newtonsoft.Json;
+using teruzuki.Twitter.Model;
 
 namespace teruzuki.Twitter.API
 {
 	public static class Help
 	{
-		public static Configuration Configuration()
+		public static IEnumerator Configuration (TwitterClient client, Action<Configuration> callback)
 		{
-			return JsonConvert.DeserializeObject<Configuration>(
-				Client.Instance.Get(
-					"https://api.twitter.com/1.1/help/configuration.json"
-				)
-			);
+			yield return client.GET<Configuration> (Constants.URL.BuildURL ("help/configuration"), callback);
 		}
 
-		public static List<Language> Languages()
+		public static IEnumerator Languages (TwitterClient client, Action<List<Language>> callback)
 		{
-			return JsonConvert.DeserializeObject<List<Language>>(
-				Client.Instance.Get(
-					"https://api.twitter.com/1.1/help/languages.json"
-				)
-			);
+			yield return client.GET<List<Language>> (Constants.URL.BuildURL ("help/languages"), callback);
 		}
 
-		public static Privacy Privacy()
+		public static IEnumerator Privacy (TwitterClient client, Action<Privacy> callback)
 		{
-			return JsonConvert.DeserializeObject<Privacy>(
-				Client.Instance.Get(
-					"https://api.twitter.com/1.1/help/privacy.json"
-				)
-			);
+			yield return client.GET<Privacy> (Constants.URL.BuildURL ("help/privacy"), callback);
 		}
 
-		public static TOS TOS()
+		public static IEnumerator TOS (TwitterClient client, Action<TOS> callback)
 		{
-			return JsonConvert.DeserializeObject<TOS>(
-				Client.Instance.Get(
-					"https://api.twitter.com/1.1/help/tos.json"
-				)
-			);
+			yield return client.GET<TOS> (Constants.URL.BuildURL ("help/tos"), callback);
 		}
 	}
 }

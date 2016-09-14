@@ -8,7 +8,8 @@ namespace teruzuki.Twitter.API
 	{
 		public static string VerifyCredentials()
 		{
-			return Client.Instance.Get("https://api.twitter.com/1.1/account/verify_credentials.json");
+			return "";
+//			return Client.Instance.Get("https://api.twitter.com/1.1/account/verify_credentials.json");
 		}
 	}
 }

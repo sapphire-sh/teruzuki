@@ -3,54 +3,51 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
-using teruzuki.Twitter.Model;
-
-using Newtonsoft.Json;
 
 namespace teruzuki.Twitter.API
 {
 	public static class Users
 	{
 
-		public static List<User> Lookup(ICollection<long> user_id)
-		{
-			NameValueCollection parameters = new NameValueCollection();
-			parameters.Add("user_id", String.Join("%2C", user_id.ToArray().Select(i => i.ToString()).ToArray()));
-			return Client.GetUsers("users/lookup", parameters);
-		}
-
-		public static List<User> Lookup(ICollection<string> screen_name)
-		{
-			NameValueCollection parameters = new NameValueCollection();
-			parameters.Add("screen_name", String.Join("%2C", screen_name.ToArray()));
-			return Client.GetUsers("users/lookup", parameters);
-		}
-
-		public static User Show(long user_id)
-		{
-			NameValueCollection parameters = new NameValueCollection();
-			parameters.Add("user_id", user_id.ToString());
-			return Client.GetUser("users/show", parameters);
-		}
-
-		public static User Show(string screen_name)
-		{
-			NameValueCollection parameters = new NameValueCollection();
-			parameters.Add("screen_name", screen_name);
-			return Client.GetUser("users/show", parameters);
-		}
-
-		public static List<User> Search(string query, int page = 0, int count = 0)
-		{
-			NameValueCollection parameters = new NameValueCollection();
-			parameters.Add("q", query);
-			if (page > 0)
-				parameters.Add("page", page.ToString());
-			if (count > 0)
-				parameters.Add("count", count.ToString());
-
-			return Client.GetUsers("users/search", parameters);
-		}
+//		public static List<User> Lookup(ICollection<long> user_id)
+//		{
+//			NameValueCollection parameters = new NameValueCollection();
+//			parameters.Add("user_id", String.Join("%2C", user_id.ToArray().Select(i => i.ToString()).ToArray()));
+//			return Client.GetUsers("users/lookup", parameters);
+//		}
+//
+//		public static List<User> Lookup(ICollection<string> screen_name)
+//		{
+//			NameValueCollection parameters = new NameValueCollection();
+//			parameters.Add("screen_name", String.Join("%2C", screen_name.ToArray()));
+//			return Client.GetUsers("users/lookup", parameters);
+//		}
+//
+//		public static User Show(long user_id)
+//		{
+//			NameValueCollection parameters = new NameValueCollection();
+//			parameters.Add("user_id", user_id.ToString());
+//			return Client.GetUser("users/show", parameters);
+//		}
+//
+//		public static User Show(string screen_name)
+//		{
+//			NameValueCollection parameters = new NameValueCollection();
+//			parameters.Add("screen_name", screen_name);
+//			return Client.GetUser("users/show", parameters);
+//		}
+//
+//		public static List<User> Search(string query, int page = 0, int count = 0)
+//		{
+//			NameValueCollection parameters = new NameValueCollection();
+//			parameters.Add("q", query);
+//			if (page > 0)
+//				parameters.Add("page", page.ToString());
+//			if (count > 0)
+//				parameters.Add("count", count.ToString());
+//
+//			return Client.GetUsers("users/search", parameters);
+//		}
 
 
 		/*

@@ -505,7 +505,7 @@ namespace teruzuki.OAuth
 			return authzHeader;
 		}
 
-		private string GetAuthorizationHeader(string uri, string method)
+		public string GetAuthorizationHeader(string uri, string method)
 		{
 			return GetAuthorizationHeader(uri, method, null);
 		}

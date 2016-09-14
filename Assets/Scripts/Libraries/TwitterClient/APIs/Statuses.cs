@@ -5,11 +5,9 @@ using System.Linq;
 using System.Text;
 using teruzuki.Twitter.Model;
 
-using Newtonsoft.Json;
-
 namespace teruzuki.Twitter.API
 {
-	public static class Statuses
+	public class Statuses
 	{
 		private static NameValueCollection GetTimelineCommonParameters(int count, long since_id, long max_id)
 		{
@@ -23,60 +21,58 @@ namespace teruzuki.Twitter.API
 			return parameters;
 		}
 
+//		public void MentionsTimeline(int count = 0, long since_id = 0, long max_id = 0)
+//		{
+//			NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
+//			Client.Instance.GetTweets("statuses/mentions_timeline", parameters);
+//		}
+//
+//		public static List<Tweet> UserTimeline(long user_id, int count = 0, long since_id = 0, long max_id = 0)
+//		{
+//			NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
+//			parameters.Add("user_id", user_id.ToString());
+//			return Client.GetTweets("statuses/user_timeline", parameters);
+//		}
+//
+//		public static List<Tweet> UserTimeline(string screen_name, int count = 0, long since_id = 0, long max_id = 0)
+//		{
+//			NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
+//			parameters.Add("screen_name", screen_name);
+//			return Client.GetTweets("statuses/user_timeline", parameters);
+//		}
+//
+//		public void HomeTimeline(int count = 0, long since_id = 0, long max_id = 0)
+//		{
+//			NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
+//			Client.Instance.GetTweets("statuses/home_timeline", parameters);
+//		}
 
-		public static List<Tweet> MentionsTimeline(int count = 0, long since_id = 0, long max_id = 0)
-		{
-			NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
-			return Client.GetTweets("statuses/mentions_timeline", parameters);
-		}
-
-		public static List<Tweet> UserTimeline(long user_id, int count = 0, long since_id = 0, long max_id = 0)
-		{
-			NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
-			parameters.Add("user_id", user_id.ToString());
-			return Client.GetTweets("statuses/user_timeline", parameters);
-		}
-
-		public static List<Tweet> UserTimeline(string screen_name, int count = 0, long since_id = 0, long max_id = 0)
-		{
-			NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
-			parameters.Add("screen_name", screen_name);
-			return Client.GetTweets("statuses/user_timeline", parameters);
-		}
-
-		public static List<Tweet> HomeTimeline(int count = 0, long since_id = 0, long max_id = 0)
-		{
-			NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
-			return Client.GetTweets("statuses/home_timeline", parameters);
-		}
-
-		public static List<Tweet> RetweetsOfMe(int count = 0, long since_id = 0, long max_id = 0)
-		{
-			NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
-			return Client.GetTweets("statuses/retweets_of_me", parameters);
-		}
-
-		public static List<Tweet> Retweets(long id, int count = 0)
-		{
-			NameValueCollection parameters = GetTimelineCommonParameters(count, 0, 0);
-			parameters.Add("id", id.ToString());
-			return Client.GetTweets("statuses/retweets", parameters);
-		}
-
-		public static Tweet Show(long id)
-		{
-			NameValueCollection parameters = new NameValueCollection();
-			parameters.Add("id", id.ToString());
-			return Client.GetTweet("statuses/show", parameters);
-		}
-
-		public static List<Tweet> Lookup(ICollection<long> id)
-		{
-			NameValueCollection parameters = new NameValueCollection();
-			parameters.Add("id", String.Join("%2C", id.ToArray().Select(i => i.ToString()).ToArray()));
-			return Client.GetTweets("statuses/lookup", parameters);
-		}
-
+//		public void RetweetsOfMe(int count = 0, long since_id = 0, long max_id = 0)
+//		{
+//			NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
+//			Client.GetTweets("statuses/retweets_of_me", parameters);
+//		}
+//
+//		public static List<Tweet> Retweets(long id, int count = 0)
+//		{
+//			NameValueCollection parameters = GetTimelineCommonParameters(count, 0, 0);
+//			parameters.Add("id", id.ToString());
+//			return Client.GetTweets("statuses/retweets", parameters);
+//		}
+//
+//		public static Tweet Show(long id)
+//		{
+//			NameValueCollection parameters = new NameValueCollection();
+//			parameters.Add("id", id.ToString());
+//			return Client.GetTweet("statuses/show", parameters);
+//		}
+//
+//		public static List<Tweet> Lookup(ICollection<long> id)
+//		{
+//			NameValueCollection parameters = new NameValueCollection();
+//			parameters.Add("id", String.Join("%2C", id.ToArray().Select(i => i.ToString()).ToArray()));
+//			return Client.GetTweets("statuses/lookup", parameters);
+//		}
 
 		/*
 			* Is this what we want?

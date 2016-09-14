@@ -16,11 +16,11 @@ namespace teruzuki
 
 		public void Test()
 		{
-			var dm = Twitter.API.DirectMessages.New("KOINICHl", "test test");
-			var obj = Instantiate(tweetPrefab);
-			var mesh = obj.GetComponent<TextMesh>();
-			mesh.text = dm.text;
-			obj.transform.position = new Vector3(0, 0, 0);
+//			var dm = Twitter.API.DirectMessages.New("KOINICHl", "test test");
+//			var obj = Instantiate(tweetPrefab);
+//			var mesh = obj.GetComponent<TextMesh>();
+//			mesh.text = dm.text;
+//			obj.transform.position = new Vector3(0, 0, 0);
 
 			/*
 			var users = Twitter.API.Users.Search("KOINICHI");
