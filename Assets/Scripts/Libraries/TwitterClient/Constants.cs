@@ -20,7 +20,7 @@ namespace teruzuki.Twitter
 		}
 
 		public static class Session {
-			public static readonly string FILE_NAME = "accounts.teruzuki";
+			public static readonly string FILE_NAME = "credentials.teruzuki";
 		}
 	}
 }

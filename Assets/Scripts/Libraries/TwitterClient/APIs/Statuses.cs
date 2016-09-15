@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
 using teruzuki.Twitter.Model;
 
@@ -45,6 +46,10 @@ namespace teruzuki.Twitter.API
 //			NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
 //			Client.Instance.GetTweets("statuses/home_timeline", parameters);
 //		}
+
+		public static IEnumerator HomeTimeline(TwitterClient client, Action<List<Tweet>> callback) {
+			yield return client.GET<List<Tweet>> (Constants.URL.BuildURL ("statuses/home_timeline"), callback);
+		}
 
 //		public void RetweetsOfMe(int count = 0, long since_id = 0, long max_id = 0)
 //		{

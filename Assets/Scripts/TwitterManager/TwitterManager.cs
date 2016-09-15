@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 using teruzuki.Twitter;
+using teruzuki.Twitter.Model;
 
 namespace teruzuki
 {
@@ -18,9 +20,9 @@ namespace teruzuki
 		}
 
 		void OnGUI() {
-//			if(GUI.Button(new Rect(10, Screen.height - 100, 200, 40), "HomeTimeline")) {
-//				FetchHomeTimeline ();
-//			}
+			if(GUI.Button(new Rect(10, Screen.height - 100, 200, 40), "HomeTimeline")) {
+				FetchHomeTimeline ();
+			}
 //
 //			if(GUI.Button(new Rect(10, Screen.height - 50, 200, 40), "MentionsTimeline")) {
 //				FetchMentionsTimeline ();
@@ -31,20 +33,25 @@ namespace teruzuki
 			}
 		}
 
-//		private void FetchHomeTimeline()
-//		{
-//			var s = new Twitter.API.Statuses();
-//			StartCoroutine (Twitter.Client.Instance.GET ("https://api.twitter.com/1.1/statuses/home_timeline.json", Log));
-////			s.HomeTimeline();
-////			for (int i = 0; i < tweets.Count; ++i) {
-////				var tweet = tweets [i];
-////				var obj = Instantiate(tweetPrefab);
-////				var mesh = obj.GetComponentInChildren<TextMesh>();
-////				mesh.text = tweet.text;
-////				obj.transform.position = new Vector3(0, 5 + i, 0);
-////				++i;
-////			}
-//		}
+		private void FetchHomeTimeline()
+		{
+			StartCoroutine (Twitter.API.Statuses.HomeTimeline (ClientManager.Instance.CurrentClient, FetchHomeTimelineCallback));
+//			s.HomeTimeline();
+//			for (int i = 0; i < tweets.Count; ++i) {
+//				var tweet = tweets [i];
+//				var obj = Instantiate(tweetPrefab);
+//				var mesh = obj.GetComponentInChildren<TextMesh>();
+//				mesh.text = tweet.text;
+//				obj.transform.position = new Vector3(0, 5 + i, 0);
+//				++i;
+//			}
+		}
+
+		private void FetchHomeTimelineCallback(List<Tweet> res) {
+			foreach (var tweet in res) {
+				Debug.Log (tweet.text);
+			}
+		}
 //
 //		private void FetchMentionsTimeline()
 //		{

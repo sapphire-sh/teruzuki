@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
@@ -25,6 +27,11 @@ namespace teruzuki.Twitter
 				return ClientList [0];
 			}
 		}
+		private List<Credentials> CredentialsList {
+			get {
+				return ClientList.Select (x => x.Credentials).ToList();
+			}
+		}
 
 		private ClientManager ()
 		{
@@ -32,25 +39,26 @@ namespace teruzuki.Twitter
 			ClientList = new List<TwitterClient> ();
 		}
 
-//		public void LoadClient ()
-//		{
-//			if (File.Exists (Application.persistentDataPath + "/" + Constants.Client.FILE_NAME)) {
-//				BinaryFormatter binaryFormatter = new BinaryFormatter ();
-//				FileStream fileStream = File.Open (Application.persistentDataPath + "/" + Constants.Client.FILE_NAME, FileMode.Open);
-//				var accessTokens = (List<AccessToken>)binaryFormatter.Deserialize (fileStream);
-//				foreach (var accessToken in accessTokens) {
-//					ClientList.Add (new TwitterClient (accessToken));
-//				}
-//				fileStream.Close ();
-//			}
-//		}
-//
-//		public void SaveClient ()
-//		{
-//			BinaryFormatter binaryFormatter = new BinaryFormatter ();
-//			FileStream fileStream = File.Create (Application.persistentDataPath + "/" + Constants.Client.FILE_NAME);
-//			binaryFormatter.Serialize (fileStream, AccessTokenList);
-//			fileStream.Close ();
-//		}
+		public void LoadClient ()
+		{
+			if (File.Exists (Application.persistentDataPath + "/" + Constants.Session.FILE_NAME)) {
+				BinaryFormatter binaryFormatter = new BinaryFormatter ();
+				FileStream fileStream = File.Open (Application.persistentDataPath + "/" + Constants.Session.FILE_NAME, FileMode.Open);
+				((List<Credentials>)binaryFormatter.Deserialize (fileStream)).ForEach (x => {
+					var client = new TwitterClient();
+					client.SetCredentials(x);
+					ClientList.Add (client);
+				});
+				fileStream.Close ();
+			}
+		}
+
+		public void SaveClient ()
+		{
+			BinaryFormatter binaryFormatter = new BinaryFormatter ();
+			FileStream fileStream = File.Create (Application.persistentDataPath + "/" + Constants.Session.FILE_NAME);
+			binaryFormatter.Serialize (fileStream, CredentialsList);
+			fileStream.Close ();
+		}
 	}
 }

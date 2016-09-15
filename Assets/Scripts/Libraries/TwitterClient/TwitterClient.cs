@@ -15,16 +15,24 @@ using LitJson;
 
 namespace teruzuki.Twitter
 {
-	[System.Serializable]
 	public class TwitterClient
 	{
 		public OAuth.Manager oauth;
 
+		public Credentials Credentials;
+
 		public TwitterClient()
 		{
-			oauth = new OAuth.Manager();
-			oauth["consumer_key"] = "OcbDuSiWrHYWU2RFgdWyV61F8";
-			oauth["consumer_secret"] = "7fNW3QITGNFQAisvtkk8yaHdXkx5j7mxM2rEJShUeqxbwZEDHZ";
+			oauth = new OAuth.Manager ();
+			oauth ["consumer_key"] = "OcbDuSiWrHYWU2RFgdWyV61F8";
+			oauth ["consumer_secret"] = "7fNW3QITGNFQAisvtkk8yaHdXkx5j7mxM2rEJShUeqxbwZEDHZ";
+		}
+
+		public void SetCredentials(Credentials credentials) {
+			this.Credentials = credentials;
+
+			oauth ["token"] = credentials.AccessToken;
+			oauth ["token_secret"] = credentials.AccessTokenSecret;
 		}
 
 		public IEnumerator AcquireRequestToken(Action<string> callback) {
@@ -57,8 +65,8 @@ namespace teruzuki.Twitter
 			yield return www;
 
 			var query = Helper.ParseQueryString (www.text);
-			oauth ["token"] = query ["oauth_token"];
-			oauth ["token_secret"] = query ["oauth_token_secret"];
+			oauth ["token"] = Credentials.AccessToken = query ["oauth_token"];
+			oauth ["token_secret"] = Credentials.AccessTokenSecret = query ["oauth_token_secret"];
 
 			callback ();
 		}
@@ -71,6 +79,8 @@ namespace teruzuki.Twitter
 			WWW www = new WWW (url, null, headers);
 			yield return www;
 
+			Debug.Log (www.text);
+
 			callback (JsonMapper.ToObject<T>(www.text));
 		}
 
@@ -78,9 +88,12 @@ namespace teruzuki.Twitter
 			Dictionary<string, string> headers = new Dictionary<string, string> ();
 			headers.Add ("Authorization", oauth.GenerateAuthzHeader (url, "POST"));
 
+			Debug.Log (headers ["Authorization"]);
+
 			WWWForm wwwForm = new WWWForm ();
 			foreach (var pair in query) {
 				wwwForm.AddField (pair.Key, pair.Value);
+				Debug.Log (pair.Value);
 			}
 
 			WWW www = new WWW (url, wwwForm.data, headers);
