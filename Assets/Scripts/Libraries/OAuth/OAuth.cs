@@ -122,7 +122,7 @@ namespace teruzuki.OAuth
 		///     when the user of this class calls <see cref='AcquireRequestToken'>.
 		///   </para>
 		/// </remarks>
-		private void NewRequest()
+		public void NewRequest()
 		{
 			_params["nonce"] = GenerateNonce();
 			_params["timestamp"] = GenerateTimeStamp();
@@ -619,7 +619,7 @@ namespace teruzuki.OAuth
 		}
 #endif
 		private static readonly DateTime _epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0);
-		private Dictionary<String, String> _params;
+		public Dictionary<String, String> _params;
 		private System.Random _random;
 	}
 

@@ -18,7 +18,7 @@ namespace teruzuki.Twitter
 	[System.Serializable]
 	public class TwitterClient
 	{
-		private OAuth.Manager oauth;
+		public OAuth.Manager oauth;
 
 		public TwitterClient()
 		{
@@ -37,29 +37,28 @@ namespace teruzuki.Twitter
 			WWW www = new WWW (Constants.URL.REQUEST_TOKEN, wwwForm.data, headers);
 			yield return www;
 
-			Debug.Log (www.text);
 			var query = Helper.ParseQueryString (www.text);
-			Debug.Log (query ["oauth_token"]);
+
+			oauth._params ["token"] = query ["oauth_token"];
 
 			callback (string.Format ("https://api.twitter.com/oauth/authenticate?oauth_token={0}", query ["oauth_token"]));
 		}
 
 		public IEnumerator AcquireAccessToken(string pin, Action callback) {
+			oauth.NewRequest ();
+			oauth._params ["verifier"] = pin;
 			Dictionary<string, string> headers = new Dictionary<string, string> ();
 			headers.Add ("Authorization", oauth.GetAuthorizationHeader (Constants.URL.ACCESS_TOKEN, "POST"));
 
 			WWWForm wwwForm = new WWWForm ();
-			wwwForm.AddField ("verifier", pin);
-
-			Debug.Log (pin);
+			wwwForm.AddField("", "");
 
 			WWW www = new WWW (Constants.URL.ACCESS_TOKEN, wwwForm.data, headers);
 			yield return www;
 
-			Debug.Log (www.text);
-
-			oauth ["token"] = "529303031-r6pg2cDNgy05auwc0SSUpgJxiPfRbKnJbXl0X8ub";
-			oauth ["token_secret"] = "5G2TBnaGJcJL5svCBIxP3YBWCJGS9Zrq5lWZOgvFkRdNj";
+			var query = Helper.ParseQueryString (www.text);
+			oauth ["token"] = query ["oauth_token"];
+			oauth ["token_secret"] = query ["oauth_token_secret"];
 
 			callback ();
 		}
@@ -78,8 +77,6 @@ namespace teruzuki.Twitter
 		public IEnumerator POST<T>(string url, Dictionary<string, string> query, Action<T> callback) {
 			Dictionary<string, string> headers = new Dictionary<string, string> ();
 			headers.Add ("Authorization", oauth.GenerateAuthzHeader (url, "POST"));
-
-			Debug.Log (headers ["Authorization"]);
 
 			WWWForm wwwForm = new WWWForm ();
 			foreach (var pair in query) {
