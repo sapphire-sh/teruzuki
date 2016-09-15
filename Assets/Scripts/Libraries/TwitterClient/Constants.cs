@@ -9,14 +9,10 @@ namespace teruzuki.Twitter
 			private static readonly string HOSTNAME = "api.twitter.com";
 			private static readonly string VERSION = "1.1";
 
-			private static string BASE_URL { get { return string.Format("{0}://{1}/", PROTOCOL, HOSTNAME); } }
+			public static string BASE_URL { get { return string.Format("{0}://{1}/{2}/", PROTOCOL, HOSTNAME, VERSION); } }
 
-			public static string BuildURL(string endpoint) {
-				return string.Format("{0}{1}/{2}.json", BASE_URL, VERSION, endpoint);
-			}
-
-			public static readonly string REQUEST_TOKEN = "https://api.twitter.com/oauth/request_token";
-			public static readonly string ACCESS_TOKEN = "https://api.twitter.com/oauth/access_token";
+			public static readonly string REQUEST_TOKEN = string.Format("{0}://{1}/oauth/request_token", PROTOCOL, HOSTNAME);
+			public static readonly string ACCESS_TOKEN = string.Format("{0}://{1}/oauth/access_token", PROTOCOL, HOSTNAME);
 		}
 
 		public static class Session {

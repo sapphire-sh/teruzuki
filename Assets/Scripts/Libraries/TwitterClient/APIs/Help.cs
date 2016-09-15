@@ -8,24 +8,24 @@ namespace teruzuki.Twitter.API
 {
 	public static class Help
 	{
-		public static IEnumerator Configuration (TwitterClient client, Action<Configuration> callback)
+		public static IEnumerator Configuration (TwitterClient client, Dictionary<string, string> queries, Action<Configuration> callback)
 		{
-			yield return client.GET<Configuration> (Constants.URL.BuildURL ("help/configuration"), callback);
+			yield return client.GET<Configuration> (Helper.BuildURL ("help/configuration"), queries, callback);
 		}
 
-		public static IEnumerator Languages (TwitterClient client, Action<List<Language>> callback)
+		public static IEnumerator Languages (TwitterClient client, Dictionary<string, string> queries, Action<List<Language>> callback)
 		{
-			yield return client.GET<List<Language>> (Constants.URL.BuildURL ("help/languages"), callback);
+			yield return client.GET<List<Language>> (Helper.BuildURL ("help/languages"), queries, callback);
 		}
 
-		public static IEnumerator Privacy (TwitterClient client, Action<Privacy> callback)
+		public static IEnumerator Privacy (TwitterClient client, Dictionary<string, string> queries, Action<Privacy> callback)
 		{
-			yield return client.GET<Privacy> (Constants.URL.BuildURL ("help/privacy"), callback);
+			yield return client.GET<Privacy> (Helper.BuildURL ("help/privacy"), queries, callback);
 		}
 
-		public static IEnumerator TOS (TwitterClient client, Action<TOS> callback)
+		public static IEnumerator TOS (TwitterClient client, Dictionary<string, string> queries, Action<TOS> callback)
 		{
-			yield return client.GET<TOS> (Constants.URL.BuildURL ("help/tos"), callback);
+			yield return client.GET<TOS> (Helper.BuildURL ("help/tos"), queries, callback);
 		}
 	}
 }

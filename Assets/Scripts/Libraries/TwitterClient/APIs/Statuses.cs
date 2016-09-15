@@ -47,8 +47,8 @@ namespace teruzuki.Twitter.API
 //			Client.Instance.GetTweets("statuses/home_timeline", parameters);
 //		}
 
-		public static IEnumerator HomeTimeline(TwitterClient client, Action<List<Tweet>> callback) {
-			yield return client.GET<List<Tweet>> (Constants.URL.BuildURL ("statuses/home_timeline"), callback);
+		public static IEnumerator HomeTimeline(TwitterClient client, Dictionary<string, string> queries, Action<List<Tweet>> callback) {
+			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/home_timeline"), queries, callback);
 		}
 
 //		public void RetweetsOfMe(int count = 0, long since_id = 0, long max_id = 0)
@@ -63,20 +63,15 @@ namespace teruzuki.Twitter.API
 //			parameters.Add("id", id.ToString());
 //			return Client.GetTweets("statuses/retweets", parameters);
 //		}
-//
-//		public static Tweet Show(long id)
-//		{
-//			NameValueCollection parameters = new NameValueCollection();
-//			parameters.Add("id", id.ToString());
-//			return Client.GetTweet("statuses/show", parameters);
-//		}
-//
-//		public static List<Tweet> Lookup(ICollection<long> id)
-//		{
-//			NameValueCollection parameters = new NameValueCollection();
-//			parameters.Add("id", String.Join("%2C", id.ToArray().Select(i => i.ToString()).ToArray()));
-//			return Client.GetTweets("statuses/lookup", parameters);
-//		}
+
+		public static IEnumerator Show(TwitterClient client, Dictionary<string, string> queries, Action<Tweet> callback) {
+			yield return client.GET<Tweet> (Helper.BuildURL ("statuses/show"), queries, callback);
+		}
+
+		public static IEnumerator LookUp(TwitterClient client, Dictionary<string, string> queries, Action<List<Tweet>> callback)
+		{
+			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/lookup"), queries, callback);
+		}
 
 		/*
 			* Is this what we want?
@@ -98,11 +93,9 @@ namespace teruzuki.Twitter.API
 			* 
 			* POST statuses/destroy/:id - require POST function */
 
-		public static IEnumerator Update (TwitterClient client, Action<string> callback)
+		public static IEnumerator Update (TwitterClient client, Dictionary<string, string> queries, Action<string> callback)
 		{
-			var dict = new Dictionary<string, string> ();
-			dict.Add ("status", "test");
-			yield return client.POST<string> (Constants.URL.BuildURL ("statuses/update"), dict, callback);
+			yield return client.POST<string> (Helper.BuildURL ("statuses/update"), queries, callback);
 		}
 			/* POST statuses/retweet/:id - require POST function
 			* POST statuses/unretweet/:id - require POST function

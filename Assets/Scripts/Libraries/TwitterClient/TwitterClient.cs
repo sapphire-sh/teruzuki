@@ -6,6 +6,7 @@ using System.Collections.Specialized;
 using System.Security.Cryptography;
 using System.IO;
 using System.Text;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
@@ -71,30 +72,27 @@ namespace teruzuki.Twitter
 			callback ();
 		}
 
-		public IEnumerator GET<T>(string url, Action<T> callback)
+		public IEnumerator GET<T>(string url, Dictionary<string, string> queries, Action<T> callback)
 		{
+			if (queries.Count > 0) {
+				url += string.Format ("?{0}", Helper.ComposeQueryString (queries));
+			}
+
 			Dictionary<string, string> headers = new Dictionary<string, string> ();
 			headers.Add("Authorization", oauth.GenerateAuthzHeader(url, "GET"));
 
 			WWW www = new WWW (url, null, headers);
 			yield return www;
 
-			Debug.Log (www.text);
-
 			callback (JsonMapper.ToObject<T>(www.text));
 		}
 
-		public IEnumerator POST<T>(string url, Dictionary<string, string> query, Action<T> callback) {
+		public IEnumerator POST<T>(string url, Dictionary<string, string> queries, Action<T> callback) {
+			WWWForm wwwForm = new WWWForm ();
+			queries.ToList ().ForEach (x => wwwForm.AddField (x.Key, x.Value));
+
 			Dictionary<string, string> headers = new Dictionary<string, string> ();
 			headers.Add ("Authorization", oauth.GenerateAuthzHeader (url, "POST"));
-
-			Debug.Log (headers ["Authorization"]);
-
-			WWWForm wwwForm = new WWWForm ();
-			foreach (var pair in query) {
-				wwwForm.AddField (pair.Key, pair.Value);
-				Debug.Log (pair.Value);
-			}
 
 			WWW www = new WWW (url, wwwForm.data, headers);
 			yield return www;
