@@ -44,6 +44,8 @@ namespace teruzuki.Twitter
 			Dictionary<string, string> headers = new Dictionary<string, string> ();
 			headers.Add ("Authorization", oauth.GenerateAuthzHeader (Constants.URL.REQUEST_TOKEN, "POST"));
 
+			Debug.Log (headers ["Authorization"]);
+
 			WWWForm wwwForm = new WWWForm ();
 			wwwForm.AddField ("", "");
 
