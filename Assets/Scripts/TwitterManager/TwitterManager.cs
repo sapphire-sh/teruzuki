@@ -21,7 +21,7 @@ namespace teruzuki
 			}
 		}
 
-		private string id_str = "";
+		private string text = "";
 
 		void OnGUI ()
 		{
@@ -33,14 +33,14 @@ namespace teruzuki
 				FetchMentionsTimeline ();
 			}
 
+			text = GUI.TextField (new Rect (Screen.width - 210, Screen.height - 150, 200, 40), text);
+
 			if (GUI.Button (new Rect (Screen.width - 210, Screen.height - 50, 200, 40), "Compose Tweet")) {
-				ComposeTweet ();
+				ComposeTweet (text);
 			}
 
-			id_str = GUI.TextField (new Rect (Screen.width - 210, Screen.height - 150, 200, 40), id_str);
-
 			if (GUI.Button (new Rect (Screen.width - 210, Screen.height - 100, 200, 40), "Show Tweet")) {
-				ShowTweet (UInt64.Parse (id_str));
+				ShowTweet (UInt64.Parse (text));
 			}
 
 			if (GUI.Button (new Rect (Screen.width - 210, 10, 200, 40), "Sign Out")) {
@@ -65,15 +65,16 @@ namespace teruzuki
 			StartCoroutine (Twitter.API.Statuses.MentionsTimeline (ClientManager.Instance.CurrentClient, new MentionsTimelineParameters (), FetchMentionsTimelineCallback));
 		}
 
-		private void ComposeTweet ()
+		private void ComposeTweet (string text)
 		{
-			var parameters = new UpdateParameters ("test");
+			var parameters = new UpdateParameters (text);
 			StartCoroutine (Twitter.API.Statuses.Update (ClientManager.Instance.CurrentClient, parameters, ComposeTweetCallback));
 		}
 
-		private void ComposeTweetCallback (string res)
+		private void ComposeTweetCallback (Tweet res)
 		{
-			Debug.Log (res);
+			InstantiateTweet (res);
+			Debug.Log (res.text);
 		}
 
 		private void ShowTweet (UInt64 id)

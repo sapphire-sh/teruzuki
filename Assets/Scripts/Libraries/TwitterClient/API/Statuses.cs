@@ -65,9 +65,9 @@ namespace teruzuki.Twitter.API
 			* 
 			* POST statuses/destroy/:id - require POST function */
 
-		public static IEnumerator Update (TwitterClient client, UpdateParameters parameters, Action<string> callback)
+		public static IEnumerator Update (TwitterClient client, UpdateParameters parameters, Action<Tweet> callback)
 		{
-			yield return client.POST<string> (Helper.BuildURL ("statuses/update"), parameters, callback);
+			yield return client.POST<Tweet> (Helper.BuildURL ("statuses/update"), parameters, callback);
 		}
 		/* POST statuses/retweet/:id - require POST function
 			* POST statuses/unretweet/:id - require POST function

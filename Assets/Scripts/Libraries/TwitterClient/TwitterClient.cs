@@ -44,7 +44,7 @@ namespace teruzuki.Twitter
 		public IEnumerator AcquireRequestToken (Action<string> callback)
 		{
 			Dictionary<string, string> headers = new Dictionary<string, string> ();
-			headers.Add ("Authorization", oauth.GetAuthorizationHeader (Constants.URL.REQUEST_TOKEN, "POST"));
+			headers.Add ("Authorization", oauth.GetAuthorizationHeader (Constants.URL.REQUEST_TOKEN, "POST", null));
 
 			Debug.Log (headers ["Authorization"]);
 
@@ -67,7 +67,7 @@ namespace teruzuki.Twitter
 		{
 			oauth.OAuthVerifier = pin;
 			Dictionary<string, string> headers = new Dictionary<string, string> ();
-			headers.Add ("Authorization", oauth.GetAuthorizationHeader (Constants.URL.ACCESS_TOKEN, "POST"));
+			headers.Add ("Authorization", oauth.GetAuthorizationHeader (Constants.URL.ACCESS_TOKEN, "POST", null));
 
 			Debug.Log (headers ["Authorization"]);
 
@@ -91,7 +91,7 @@ namespace teruzuki.Twitter
 			url += parameters.ComposeQueryString ();
 
 			Dictionary<string, string> headers = new Dictionary<string, string> ();
-			headers.Add ("Authorization", oauth.GetAuthorizationHeader (url, "GET"));
+			headers.Add ("Authorization", oauth.GetAuthorizationHeader (url, "GET", parameters));
 
 			WWW www = new WWW (url, null, headers);
 			yield return www;
@@ -103,12 +103,11 @@ namespace teruzuki.Twitter
 		{
 			WWWForm wwwForm = new WWWForm ();
 			parameters.Queries.ToList ().ForEach (x => {
-				Debug.Log (x.Key + " " + x.Value);
 				wwwForm.AddField (x.Key, x.Value);
 			});
 
 			Dictionary<string, string> headers = new Dictionary<string, string> ();
-			headers.Add ("Authorization", oauth.GetAuthorizationHeader (url, "POST"));
+			headers.Add ("Authorization", oauth.GetAuthorizationHeader (url, "POST", parameters));
 
 			WWW www = new WWW (url, wwwForm.data, headers);
 			yield return www;

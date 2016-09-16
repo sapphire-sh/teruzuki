@@ -9,6 +9,8 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
+using teruzuki.Twitter.Parameters;
+
 namespace teruzuki.Twitter
 {
 	public class OAuth
@@ -117,65 +119,45 @@ namespace teruzuki.Twitter
 			return stringBuilder.ToString ().TrimEnd (' ').TrimEnd (',');
 		}
 
-		public string GetAuthorizationHeader (string uri, string method)
+		public string GetAuthorizationHeader (string uri, string method, ITwitterParameters parameters)
 		{
 			this.OAuthTimestamp = GenerateTimestamp ();
 			this.OAuthNonce = GenerateNonce ();
-
-			Sign (uri, method);
+			this.OAuthSignature = CalculateSignature (uri, method, parameters);
 
 			return string.Format ("OAuth {0}", EncodeRequestParameters (this.parameters));
 		}
 
-		private void Sign (string uri, string method)
+		private string CalculateSignature (string uri, string method, ITwitterParameters parameters)
 		{
-			var signatureBase = GetSignatureBase (uri, method);
-			var hash = GetHash ();
-
-			byte[] dataBuffer = System.Text.Encoding.ASCII.GetBytes (signatureBase);
-			byte[] hashBytes = hash.ComputeHash (dataBuffer);
-
-			this.OAuthSignature = Convert.ToBase64String (hashBytes);
+			return Convert.ToBase64String (GetSigningKey ().ComputeHash (System.Text.Encoding.ASCII.GetBytes (GetSignatureBase (uri, method, parameters))));
 		}
 
-		private string GetSignatureBase (string url, string method)
+		private string GetSignatureBase (string url, string method, ITwitterParameters parameters)
 		{
-			// normalize the URI
-			var uri = new Uri (url);
-			var normUrl = string.Format ("{0}://{1}", uri.Scheme, uri.Host);
-			if (!((uri.Scheme == "http" && uri.Port == 80) || (uri.Scheme == "https" && uri.Port == 443)))
-				normUrl += ":" + uri.Port;
-
-			normUrl += uri.AbsolutePath;
-
-			// the sigbase starts with the method and the encoded URI
-			var sb = new System.Text.StringBuilder ();
-			sb.Append (method).Append ('&').Append (UrlEncode (normUrl)).Append ('&');
-
-			var p = ExtractQueryParameters (uri.Query);
-			foreach (var p1 in this.parameters) {
-				if (!String.IsNullOrEmpty (this.parameters [p1.Key]) && !p1.Key.EndsWith ("_secret") && !p1.Key.EndsWith ("signature")) {
-					p.Add (p1.Key, p1.Value);
+			var p = new Dictionary<string, string>();
+			this.parameters.ToList ().ForEach (x => {
+				if(!String.IsNullOrEmpty(x.Value) && !x.Key.EndsWith("_secret") && !x.Key.EndsWith("_signature")) {
+					p.Add(x.Key, x.Value);
 				}
+			});
+			if (parameters != null) {
+				parameters.Queries.ToList ().ForEach (x => p.Add (x.Key, x.Value));
 			}
 
-			var sb1 = new System.Text.StringBuilder ();
-			foreach (KeyValuePair<String, String> item in p.OrderBy(x => x.Key)) {
-				sb1.AppendFormat ("{0}={1}&", item.Key, item.Value);
-			}
+			var stringBuilder = new StringBuilder ();
+			p.OrderBy (x => x.Key).ToList ().ForEach (x => stringBuilder.AppendFormat ("{0}={1}&", UrlEncode (x.Key), UrlEncode (x.Value)));
 
-			sb.Append (UrlEncode (sb1.ToString ().TrimEnd ('&')));
-			var result = sb.ToString ();
+			var result = string.Format ("{0}&{1}&{2}", method, UrlEncode (url), UrlEncode (stringBuilder.ToString ().TrimEnd ('&')));
+			Debug.Log (result);
 			return result;
 		}
 
-		private HashAlgorithm GetHash ()
+		private HashAlgorithm GetSigningKey ()
 		{
-			string keystring = string.Format ("{0}&{1}", WWW.EscapeURL (this.OAuthConsumerSecret), WWW.EscapeURL (this.OAuthTokenSecret));
-			var hmacsha1 = new HMACSHA1 {
-				Key = System.Text.Encoding.ASCII.GetBytes (keystring)
+			return new HMACSHA1 {
+				Key = System.Text.Encoding.ASCII.GetBytes (string.Format ("{0}&{1}", this.OAuthConsumerSecret, this.OAuthTokenSecret))
 			};
-			return hmacsha1;
 		}
 	}
 }
