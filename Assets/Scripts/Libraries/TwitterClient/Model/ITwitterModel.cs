@@ -2,7 +2,7 @@
 
 namespace teruzuki.Twitter.Model
 {
-	public abstract class IModel
+	public abstract class ITwitterModel
 	{
 	}
 }

@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace teruzuki.Twitter.Model
 {
-	public class Tweet : IModel
+	public class Tweet : ITwitterModel
 	{
-		public Int64 id { get; set; }
-		public string id_str { get; set; }
-		public string text { get; set; }
+		public ulong id;
+		public string id_str;
+		public string text;
 	}
 }

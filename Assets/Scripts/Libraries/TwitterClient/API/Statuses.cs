@@ -14,25 +14,9 @@ namespace teruzuki.Twitter.API
 			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/mentions_timeline"), parameters, callback);
 		}
 
-//		public static List<Tweet> UserTimeline(long user_id, int count = 0, long since_id = 0, long max_id = 0)
-//		{
-//			NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
-//			parameters.Add("user_id", user_id.ToString());
-//			return Client.GetTweets("statuses/user_timeline", parameters);
-//		}
-//
-//		public static List<Tweet> UserTimeline(string screen_name, int count = 0, long since_id = 0, long max_id = 0)
-//		{
-//			NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
-//			parameters.Add("screen_name", screen_name);
-//			return Client.GetTweets("statuses/user_timeline", parameters);
-//		}
-//
-//		public void HomeTimeline(int count = 0, long since_id = 0, long max_id = 0)
-//		{
-//			NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
-//			Client.Instance.GetTweets("statuses/home_timeline", parameters);
-//		}
+		public static IEnumerator UserTimeline(TwitterClient client, UserTimelineParameters parameters, Action<List<Tweet>> callback) {
+			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/user_timeline"), parameters, callback);
+		}
 
 		public static IEnumerator HomeTimeline(TwitterClient client, HomeTimelineParameters parameters, Action<List<Tweet>> callback) {
 			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/home_timeline"), parameters, callback);

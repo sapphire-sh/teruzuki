@@ -29,6 +29,8 @@ namespace teruzuki.Twitter
 			oauth = new OAuth.Manager ();
 			oauth ["consumer_key"] = "OcbDuSiWrHYWU2RFgdWyV61F8";
 			oauth ["consumer_secret"] = "7fNW3QITGNFQAisvtkk8yaHdXkx5j7mxM2rEJShUeqxbwZEDHZ";
+
+			Credentials = new Credentials ();
 		}
 
 		public void SetCredentials(Credentials credentials) {

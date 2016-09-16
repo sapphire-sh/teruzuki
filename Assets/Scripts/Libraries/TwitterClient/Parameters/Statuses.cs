@@ -7,11 +7,11 @@ namespace teruzuki.Twitter.Parameters.Statuses
 {
 	public class MentionsTimelineParameters : ITwitterParameters
 	{
-		public UInt64 Count { set { queries ["count"] = value.ToString (); } }
+		public ulong Count { set { queries ["count"] = value.ToString (); } }
 
-		public UInt64 SinceID { set { queries ["since_id"] = value.ToString (); } }
+		public ulong SinceID { set { queries ["since_id"] = value.ToString (); } }
 
-		public UInt64 MaxID { set { queries ["max_id"] = value.ToString (); } }
+		public ulong MaxID { set { queries ["max_id"] = value.ToString (); } }
 
 		public bool TrimUser { set { queries ["trim_user"] = value.ToString (); } }
 
@@ -20,13 +20,34 @@ namespace teruzuki.Twitter.Parameters.Statuses
 		public bool IncludeEntities { set { queries ["include_entities"] = value.ToString (); } }
 	}
 
+	public class UserTimelineParameters: ITwitterParameters
+	{
+		public ulong UserID { set { queries ["user_id"] = value.ToString (); } }
+
+		public string ScreenName { set { queries ["screen_name"] = value.ToString (); } }
+
+		public ulong SinceID { set { queries ["since_id"] = value.ToString (); } }
+
+		public ulong Count { set { queries ["count"] = value.ToString (); } }
+
+		public ulong MaxID { set { queries ["max_id"] = value.ToString (); } }
+
+		public bool TrimUser { set { queries ["trim_user"] = value.ToString (); } }
+
+		public bool ExcludeReplies { set { queries ["exclude_replies"] = value.ToString (); } }
+
+		public bool ContributorDetails { set { queries ["contributor_details"] = value.ToString (); } }
+
+		public bool IncludeRTs { set { queries ["include_rts"] = value.ToString (); } }
+	}
+
 	public class HomeTimelineParameters : ITwitterParameters
 	{
-		public UInt64 Count { set { queries ["count"] = value.ToString (); } }
+		public ulong Count { set { queries ["count"] = value.ToString (); } }
 
-		public UInt64 SinceID { set { queries ["since_id"] = value.ToString (); } }
+		public ulong SinceID { set { queries ["since_id"] = value.ToString (); } }
 
-		public UInt64 MaxID { set { queries ["max_id"] = value.ToString (); } }
+		public ulong MaxID { set { queries ["max_id"] = value.ToString (); } }
 
 		public bool TrimUser { set { queries ["trim_user"] = value.ToString (); } }
 
@@ -39,7 +60,7 @@ namespace teruzuki.Twitter.Parameters.Statuses
 
 	public class ShowParameters : ITwitterParameters
 	{
-		public UInt64 ID { set { queries ["id"] = value.ToString (); } }
+		public ulong ID { set { queries ["id"] = value.ToString (); } }
 
 		public bool TrimUser { set { queries ["trim_user"] = value.ToString (); } }
 
@@ -47,7 +68,7 @@ namespace teruzuki.Twitter.Parameters.Statuses
 
 		public bool IncludeEntities { set { queries ["include_entities"] = value.ToString (); } }
 
-		public ShowParameters (UInt64 ID)
+		public ShowParameters (ulong ID)
 		{
 			this.ID = ID;
 		}
@@ -57,7 +78,7 @@ namespace teruzuki.Twitter.Parameters.Statuses
 	{
 		public string Status { set { queries ["status"] = value.ToString (); } }
 
-		public UInt64 InReplyToStatusID { set { queries ["in_reply_to_status_id"] = value.ToString (); } }
+		public ulong InReplyToStatusID { set { queries ["in_reply_to_status_id"] = value.ToString (); } }
 
 		public bool PossiblySensitive { set { queries ["possibly_sensitive"] = value.ToString (); } }
 
@@ -71,12 +92,12 @@ namespace teruzuki.Twitter.Parameters.Statuses
 
 		public bool TrimUser { set { queries ["trim_user"] = value.ToString (); } }
 
-		public UInt64 MediaIDs { set { queries ["media_ids"] = value.ToString (); } }
+		public ulong MediaIDs { set { queries ["media_ids"] = value.ToString (); } }
 	}
 
 	public class LookUpParameters : ITwitterParameters
 	{
-		public List<UInt64> ID { set { queries ["id"] = value.Select(x => x.ToString()).Aggregate ((a, b) => string.Format ("{0},{1}", a, b)); } }
+		public List<ulong> ID { set { queries ["id"] = value.Select (x => x.ToString ()).Aggregate ((a, b) => string.Format ("{0},{1}", a, b)); } }
 
 		public bool IncludeEntities { set { queries ["include_entities"] = value.ToString (); } }
 
