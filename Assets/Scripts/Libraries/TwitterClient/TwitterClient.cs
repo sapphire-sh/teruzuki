@@ -20,29 +20,31 @@ namespace teruzuki.Twitter
 {
 	public class TwitterClient
 	{
-		public OAuth.Manager oauth;
+		public OAuth oauth;
 
 		public Credentials Credentials;
 
-		public TwitterClient()
+		public TwitterClient () : this ("", "")
 		{
-			oauth = new OAuth.Manager ();
-			oauth ["consumer_key"] = "OcbDuSiWrHYWU2RFgdWyV61F8";
-			oauth ["consumer_secret"] = "7fNW3QITGNFQAisvtkk8yaHdXkx5j7mxM2rEJShUeqxbwZEDHZ";
+		}
+
+		public TwitterClient (Credentials credentials) : this (credentials.AccessToken, credentials.AccessTokenSecret)
+		{
+		}
+
+		public TwitterClient (string accessToken, string accessTokenSecret)
+		{
+			oauth = new OAuth (accessToken, accessTokenSecret);
 
 			Credentials = new Credentials ();
+			Credentials.AccessToken = accessToken;
+			Credentials.AccessTokenSecret = accessTokenSecret;
 		}
 
-		public void SetCredentials(Credentials credentials) {
-			this.Credentials = credentials;
-
-			oauth ["token"] = credentials.AccessToken;
-			oauth ["token_secret"] = credentials.AccessTokenSecret;
-		}
-
-		public IEnumerator AcquireRequestToken(Action<string> callback) {
+		public IEnumerator AcquireRequestToken (Action<string> callback)
+		{
 			Dictionary<string, string> headers = new Dictionary<string, string> ();
-			headers.Add ("Authorization", oauth.GenerateAuthzHeader (Constants.URL.REQUEST_TOKEN, "POST"));
+			headers.Add ("Authorization", oauth.GetAuthorizationHeader (Constants.URL.REQUEST_TOKEN, "POST"));
 
 			Debug.Log (headers ["Authorization"]);
 
@@ -52,89 +54,68 @@ namespace teruzuki.Twitter
 			WWW www = new WWW (Constants.URL.REQUEST_TOKEN, wwwForm.data, headers);
 			yield return www;
 
+			Debug.Log (www.text);
+
 			var query = Helper.ParseQueryString (www.text);
 
-			oauth._params ["token"] = query ["oauth_token"];
+			oauth.OAuthToken = query ["oauth_token"];
 
 			callback (string.Format ("https://api.twitter.com/oauth/authenticate?oauth_token={0}", query ["oauth_token"]));
 		}
 
-		public IEnumerator AcquireAccessToken(string pin, Action callback) {
-			oauth.NewRequest ();
-			oauth._params ["verifier"] = pin;
+		public IEnumerator AcquireAccessToken (string pin, Action callback)
+		{
+			oauth.OAuthVerifier = pin;
 			Dictionary<string, string> headers = new Dictionary<string, string> ();
 			headers.Add ("Authorization", oauth.GetAuthorizationHeader (Constants.URL.ACCESS_TOKEN, "POST"));
 
+			Debug.Log (headers ["Authorization"]);
+
 			WWWForm wwwForm = new WWWForm ();
-			wwwForm.AddField("", "");
+			wwwForm.AddField ("", "");
 
 			WWW www = new WWW (Constants.URL.ACCESS_TOKEN, wwwForm.data, headers);
 			yield return www;
 
+			Debug.Log (www.text);
+
 			var query = Helper.ParseQueryString (www.text);
-			oauth ["token"] = Credentials.AccessToken = query ["oauth_token"];
-			oauth ["token_secret"] = Credentials.AccessTokenSecret = query ["oauth_token_secret"];
+			oauth.OAuthToken = Credentials.AccessToken = query ["oauth_token"];
+			oauth.OAuthTokenSecret = Credentials.AccessTokenSecret = query ["oauth_token_secret"];
 
 			callback ();
 		}
 
-		public IEnumerator GET<T>(string url, ITwitterParameters parameters, Action<T> callback)
+		public IEnumerator GET<T> (string url, ITwitterParameters parameters, Action<T> callback)
 		{
 			url += parameters.ComposeQueryString ();
 
 			Dictionary<string, string> headers = new Dictionary<string, string> ();
-			headers.Add("Authorization", oauth.GenerateAuthzHeader(url, "GET"));
+			headers.Add ("Authorization", oauth.GetAuthorizationHeader (url, "GET"));
 
 			WWW www = new WWW (url, null, headers);
 			yield return www;
 
-			callback (JsonMapper.ToObject<T>(www.text));
+			callback (JsonMapper.ToObject<T> (www.text));
 		}
 
-		public IEnumerator POST<T>(string url, ITwitterParameters parameters, Action<T> callback) {
+		public IEnumerator POST<T> (string url, ITwitterParameters parameters, Action<T> callback)
+		{
 			WWWForm wwwForm = new WWWForm ();
 			parameters.Queries.ToList ().ForEach (x => {
-				Debug.Log(x.Key + " " + x.Value);
+				Debug.Log (x.Key + " " + x.Value);
 				wwwForm.AddField (x.Key, x.Value);
 			});
 
 			Dictionary<string, string> headers = new Dictionary<string, string> ();
-			headers.Add ("Authorization", oauth.GenerateAuthzHeader (url, "POST"));
+			headers.Add ("Authorization", oauth.GetAuthorizationHeader (url, "POST"));
 
 			WWW www = new WWW (url, wwwForm.data, headers);
 			yield return www;
 
 			Debug.Log (www.text);
 
-			callback (JsonMapper.ToObject<T>(www.text));
-		}
-
-		private static string BuildUrl(string baseurl, string key, string value)
-		{
-			NameValueCollection parameter = new NameValueCollection();
-			parameter.Add(key, value);
-			return BuildUrl(baseurl, parameter);
-		}
-
-		private static string BuildUrl(string baseurl, NameValueCollection parameters)
-		{
-			StringBuilder q = new StringBuilder();
-
-			foreach (string key in parameters)
-			{
-				q.Append((q.Length == 0) ? '?' : '&');
-				q.Append(key);
-				q.Append('=');
-				q.Append(WWW.EscapeURL(parameters[key]));
-			}
-
-			return baseurl + q.ToString();
-		}
-
-		public static string GetApiUrl(string path, NameValueCollection parameters)
-		{
-			string baseurl = "https://api.twitter.com/1.1/" + path + ".json";
-			return BuildUrl(baseurl, parameters);
+			callback (JsonMapper.ToObject<T> (www.text));
 		}
 	}
 }

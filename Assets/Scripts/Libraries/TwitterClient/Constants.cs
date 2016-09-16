@@ -15,8 +15,13 @@ namespace teruzuki.Twitter
 			public static readonly string ACCESS_TOKEN = string.Format("{0}://{1}/oauth/access_token", PROTOCOL, HOSTNAME);
 		}
 
-		public static class Session {
+		public static class Credentials {
 			public static readonly string FILE_NAME = "credentials.teruzuki";
+		}
+
+		public static class Key {
+			public static readonly string CONSUMER_KEY = "OcbDuSiWrHYWU2RFgdWyV61F8";
+			public static readonly string CONSUMER_SECRET = "7fNW3QITGNFQAisvtkk8yaHdXkx5j7mxM2rEJShUeqxbwZEDHZ";
 		}
 	}
 }

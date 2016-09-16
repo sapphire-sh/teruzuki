@@ -3,81 +3,70 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Net.Security;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using UnityEngine;
 
-namespace teruzuki.OAuth
+namespace teruzuki.Twitter
 {
-	public class Manager
+	public class OAuth
 	{
-		public Manager ()
+		private Dictionary<String, String> parameters;
+
+		public string OAuthCallback { get { return parameters ["oauth_callback"]; } set { parameters ["oauth_callback"] = value; } }
+
+		public string OAuthConsumerKey { get { return parameters ["oauth_consumer_key"]; } set { parameters ["oauth_consumer_key"] = value; } }
+
+		public string OAuthConsumerSecret { get { return parameters ["oauth_consumer_secret"]; } set { parameters ["oauth_consumer_secret"] = value; } }
+
+		public string OAuthTimestamp { get { return parameters ["oauth_timestamp"]; } set { parameters ["oauth_timestamp"] = value; } }
+
+		public string OAuthNonce { get { return parameters ["oauth_nonce"]; } set { parameters ["oauth_nonce"] = value; } }
+
+		public string OAuthSignatureMethod { get { return parameters ["oauth_signature_method"]; } set { parameters ["oauth_signature_method"] = value; } }
+
+		public string OAuthSignature { get { return parameters ["oauth_signature"]; } set { parameters ["oauth_signature"] = value; } }
+
+		public string OAuthToken { get { return parameters ["oauth_token"]; } set { parameters ["oauth_token"] = value; } }
+
+		public string OAuthTokenSecret { get { return parameters ["oauth_token_secret"]; } set { parameters ["oauth_token_secret"] = value; } }
+
+		public string OAuthVersion { get { return parameters ["oauth_version"]; } set { parameters ["oauth_version"] = value; } }
+
+		public string OAuthVerifier { get { return parameters ["oauth_verifier"]; } set { parameters ["oauth_verifier"] = value; } }
+
+		public OAuth () : this ("", "")
 		{
-			_random = new System.Random ();
-			_params = new Dictionary<String, String> ();
-			_params ["callback"] = "oob";
-			_params ["consumer_key"] = "";
-			_params ["consumer_secret"] = "";
-			_params ["timestamp"] = GenerateTimeStamp ();
-			_params ["nonce"] = GenerateNonce ();
-			_params ["signature_method"] = "HMAC-SHA1";
-			_params ["signature"] = "";
-			_params ["token"] = "";
-			_params ["token_secret"] = "";
-			_params ["version"] = "1.0";
 		}
 
-		public Manager (string consumerKey, string consumerSecret, string token, string tokenSecret) : this ()
+		public OAuth (string accessToken, string accessTokenSecret)
 		{
-			_params ["consumer_key"] = consumerKey;
-			_params ["consumer_secret"] = consumerSecret;
-			_params ["token"] = token;
-			_params ["token_secret"] = tokenSecret;
+			this.parameters = new Dictionary<string, string> ();
+			this.OAuthCallback = "oob";
+			this.OAuthConsumerKey = Constants.Key.CONSUMER_KEY;
+			this.OAuthConsumerSecret = Constants.Key.CONSUMER_SECRET;
+			this.OAuthTimestamp = GenerateTimestamp ();
+			this.OAuthNonce = GenerateNonce ();
+			this.OAuthSignatureMethod = "HMAC-SHA1";
+			this.OAuthSignature = "";
+			this.OAuthToken = accessToken;
+			this.OAuthTokenSecret = accessTokenSecret;
+			this.OAuthVersion = "1.0";
+			this.OAuthVerifier = "";
 		}
 
-		public string this [string ix] {
-			get {
-				if (_params.ContainsKey (ix))
-					return _params [ix];
-				throw new ArgumentException (ix);
-			}
-			set {
-				if (!_params.ContainsKey (ix))
-					throw new ArgumentException (ix);
-				_params [ix] = value;
-			}
+		private string GenerateTimestamp ()
+		{
+			return Math.Floor ((DateTime.UtcNow - new DateTime (1970, 1, 1)).TotalSeconds).ToString ();
 		}
 
-		private string GenerateTimeStamp ()
-		{
-			TimeSpan ts = DateTime.UtcNow - _epoch;
-			return Convert.ToInt64 (ts.TotalSeconds).ToString ();
-		}
-
-		public void NewRequest ()
-		{
-			_params ["nonce"] = GenerateNonce ();
-			_params ["timestamp"] = GenerateTimeStamp ();
-		}
+		private static SHA1CryptoServiceProvider sha1 = new SHA1CryptoServiceProvider ();
 
 		private string GenerateNonce ()
 		{
-			var sb = new System.Text.StringBuilder ();
-			for (int i = 0; i < 8; i++) {
-				int g = _random.Next (3);
-				switch (g) {
-				case 0:
-						// lowercase alpha
-					sb.Append ((char)(_random.Next (26) + 97), 1);
-					break;
-				default:
-						// numeric digits
-					sb.Append ((char)(_random.Next (10) + 48), 1);
-					break;
-				}
-			}
-			return sb.ToString ();
+			return BitConverter.ToString (sha1.ComputeHash (Encoding.ASCII.GetBytes (GenerateTimestamp ()))).Replace ("-", "").ToLower ();
 		}
 
 		private Dictionary<String, String> ExtractQueryParameters (string queryString)
@@ -117,49 +106,25 @@ namespace teruzuki.OAuth
 
 		private static string unreservedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
 
-		private static string EncodeRequestParameters (ICollection<KeyValuePair<String, String>> p)
+		private static string EncodeRequestParameters (Dictionary<string, string> parameters)
 		{
-			var sb = new System.Text.StringBuilder ();
-			foreach (KeyValuePair<String, String> item in p.OrderBy(x => x.Key)) {
-				if (!String.IsNullOrEmpty (item.Value) && !item.Key.EndsWith ("secret")) {
-					sb.AppendFormat ("oauth_{0}=\"{1}\", ", item.Key, WWW.EscapeURL (item.Value));
-				}
-			}
-
-			return sb.ToString ().TrimEnd (' ').TrimEnd (',');
-		}
-
-		public string GenerateCredsHeader (string uri, string method, string realm)
-		{
-			NewRequest ();
-			var authzHeader = GetAuthorizationHeader (uri, method, realm);
-			return authzHeader;
-		}
-
-		public string GenerateAuthzHeader (string uri, string method)
-		{
-			NewRequest ();
-			var authzHeader = GetAuthorizationHeader (uri, method, null);
-			return authzHeader;
+			var stringBuilder = new StringBuilder ();
+			parameters.ToList ().FindAll (x => {
+				return (!x.Key.EndsWith ("secret") && !string.IsNullOrEmpty (x.Value));
+			}).ForEach (x => {
+				stringBuilder.Append (string.Format ("{0}=\"{1}\", ", x.Key, WWW.EscapeURL (x.Value)));
+			});
+			return stringBuilder.ToString ().TrimEnd (' ').TrimEnd (',');
 		}
 
 		public string GetAuthorizationHeader (string uri, string method)
 		{
-			return GetAuthorizationHeader (uri, method, null);
-		}
-
-		private string GetAuthorizationHeader (string uri, string method, string realm)
-		{
-			if (string.IsNullOrEmpty (this._params ["consumer_key"]))
-				throw new ArgumentNullException ("consumer_key");
-
-			if (string.IsNullOrEmpty (this._params ["signature_method"]))
-				throw new ArgumentNullException ("signature_method");
+			this.OAuthTimestamp = GenerateTimestamp ();
+			this.OAuthNonce = GenerateNonce ();
 
 			Sign (uri, method);
 
-			var erp = EncodeRequestParameters (this._params);
-			return (String.IsNullOrEmpty (realm)) ? "OAuth " + erp : String.Format ("OAuth realm=\"{0}\", ", realm) + erp;
+			return string.Format ("OAuth {0}", EncodeRequestParameters (this.parameters));
 		}
 
 		private void Sign (string uri, string method)
@@ -170,7 +135,7 @@ namespace teruzuki.OAuth
 			byte[] dataBuffer = System.Text.Encoding.ASCII.GetBytes (signatureBase);
 			byte[] hashBytes = hash.ComputeHash (dataBuffer);
 
-			this ["signature"] = Convert.ToBase64String (hashBytes);
+			this.OAuthSignature = Convert.ToBase64String (hashBytes);
 		}
 
 		private string GetSignatureBase (string url, string method)
@@ -188,9 +153,10 @@ namespace teruzuki.OAuth
 			sb.Append (method).Append ('&').Append (UrlEncode (normUrl)).Append ('&');
 
 			var p = ExtractQueryParameters (uri.Query);
-			foreach (var p1 in this._params) {
-				if (!String.IsNullOrEmpty (this._params [p1.Key]) && !p1.Key.EndsWith ("_secret") && !p1.Key.EndsWith ("signature"))
-					p.Add ("oauth_" + p1.Key, p1.Value);
+			foreach (var p1 in this.parameters) {
+				if (!String.IsNullOrEmpty (this.parameters [p1.Key]) && !p1.Key.EndsWith ("_secret") && !p1.Key.EndsWith ("signature")) {
+					p.Add (p1.Key, p1.Value);
+				}
 			}
 
 			var sb1 = new System.Text.StringBuilder ();
@@ -205,18 +171,11 @@ namespace teruzuki.OAuth
 
 		private HashAlgorithm GetHash ()
 		{
-			if (this ["signature_method"] != "HMAC-SHA1")
-				throw new NotImplementedException ();
-
-			string keystring = string.Format ("{0}&{1}", WWW.EscapeURL (this ["consumer_secret"]), WWW.EscapeURL (this ["token_secret"]));
+			string keystring = string.Format ("{0}&{1}", WWW.EscapeURL (this.OAuthConsumerSecret), WWW.EscapeURL (this.OAuthTokenSecret));
 			var hmacsha1 = new HMACSHA1 {
 				Key = System.Text.Encoding.ASCII.GetBytes (keystring)
 			};
 			return hmacsha1;
 		}
-
-		private static readonly DateTime _epoch = new DateTime (1970, 1, 1, 0, 0, 0, 0);
-		public Dictionary<String, String> _params;
-		private System.Random _random;
 	}
 }

@@ -41,14 +41,10 @@ namespace teruzuki.Twitter
 
 		public void LoadClient ()
 		{
-			if (File.Exists (Application.persistentDataPath + "/" + Constants.Session.FILE_NAME)) {
+			if (File.Exists (Application.persistentDataPath + "/" + Constants.Credentials.FILE_NAME)) {
 				BinaryFormatter binaryFormatter = new BinaryFormatter ();
-				FileStream fileStream = File.Open (Application.persistentDataPath + "/" + Constants.Session.FILE_NAME, FileMode.Open);
-				((List<Credentials>)binaryFormatter.Deserialize (fileStream)).ForEach (x => {
-					var client = new TwitterClient();
-					client.SetCredentials(x);
-					ClientList.Add (client);
-				});
+				FileStream fileStream = File.Open (Application.persistentDataPath + "/" + Constants.Credentials.FILE_NAME, FileMode.Open);
+				((List<Credentials>)binaryFormatter.Deserialize (fileStream)).ForEach (x => ClientList.Add (new TwitterClient (x)));
 				fileStream.Close ();
 			}
 		}
@@ -56,7 +52,7 @@ namespace teruzuki.Twitter
 		public void SaveClient ()
 		{
 			BinaryFormatter binaryFormatter = new BinaryFormatter ();
-			FileStream fileStream = File.Create (Application.persistentDataPath + "/" + Constants.Session.FILE_NAME);
+			FileStream fileStream = File.Create (Application.persistentDataPath + "/" + Constants.Credentials.FILE_NAME);
 			binaryFormatter.Serialize (fileStream, CredentialsList);
 			fileStream.Close ();
 		}

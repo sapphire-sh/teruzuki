@@ -96,6 +96,8 @@ namespace teruzuki
 			var obj = Instantiate (tweetPrefab);
 			var mesh = obj.GetComponentInChildren<TextMesh> ();
 			mesh.text = tweet.text;
+			var bounds = obj.GetComponentInChildren<Renderer> ().bounds;
+			Debug.Log (bounds);
 			obj.transform.position = new Vector3 (0, 5, 0);
 		}
 
