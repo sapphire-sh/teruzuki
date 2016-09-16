@@ -93,7 +93,10 @@ namespace teruzuki.Twitter
 
 		public IEnumerator POST<T>(string url, ITwitterParameters parameters, Action<T> callback) {
 			WWWForm wwwForm = new WWWForm ();
-			parameters.Queries.ToList ().ForEach (x => wwwForm.AddField (x.Key, x.Value));
+			parameters.Queries.ToList ().ForEach (x => {
+				Debug.Log(x.Key + " " + x.Value);
+				wwwForm.AddField (x.Key, x.Value);
+			});
 
 			Dictionary<string, string> headers = new Dictionary<string, string> ();
 			headers.Add ("Authorization", oauth.GenerateAuthzHeader (url, "POST"));

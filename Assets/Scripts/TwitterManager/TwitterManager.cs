@@ -42,6 +42,10 @@ namespace teruzuki
 			if (GUI.Button (new Rect (Screen.width - 210, Screen.height - 100, 200, 40), "Show Tweet")) {
 				ShowTweet (UInt64.Parse (id_str));
 			}
+
+			if (GUI.Button (new Rect (Screen.width - 210, 10, 200, 40), "Sign Out")) {
+				SignOut ();
+			}
 		}
 
 		private void FetchHomeTimeline ()
@@ -63,7 +67,8 @@ namespace teruzuki
 
 		private void ComposeTweet ()
 		{
-			StartCoroutine (Twitter.API.Statuses.Update (ClientManager.Instance.CurrentClient, new UpdateParameters (), ComposeTweetCallback));
+			var parameters = new UpdateParameters ("test");
+			StartCoroutine (Twitter.API.Statuses.Update (ClientManager.Instance.CurrentClient, parameters, ComposeTweetCallback));
 		}
 
 		private void ComposeTweetCallback (string res)
@@ -92,6 +97,12 @@ namespace teruzuki
 			var mesh = obj.GetComponentInChildren<TextMesh> ();
 			mesh.text = tweet.text;
 			obj.transform.position = new Vector3 (0, 5, 0);
+		}
+
+		private void SignOut() {
+			ClientManager.Instance.ClientList.Remove (ClientManager.Instance.CurrentClient);
+			ClientManager.Instance.SaveClient ();
+			SceneManager.LoadScene ("login");
 		}
 	}
 }

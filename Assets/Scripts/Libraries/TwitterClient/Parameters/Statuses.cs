@@ -92,9 +92,9 @@ namespace teruzuki.Twitter.Parameters.Statuses
 
 		public bool IncludeEntities { set { queries ["include_entities"] = value.ToString (); } }
 
-		public ShowParameters (ulong ID)
+		public ShowParameters (ulong id)
 		{
-			this.ID = ID;
+			this.ID = id;
 		}
 	}
 
@@ -129,8 +129,8 @@ namespace teruzuki.Twitter.Parameters.Statuses
 
 		public bool StringifyIDs { set { queries ["stringify_ids"] = value.ToString (); } }
 
-		public RetweetersIDsParameters(ulong ID) {
-			this.ID = ID;
+		public RetweetersIDsParameters(ulong id) {
+			this.ID = id;
 		}
 	}
 
@@ -153,6 +153,10 @@ namespace teruzuki.Twitter.Parameters.Statuses
 		public bool TrimUser { set { queries ["trim_user"] = value.ToString (); } }
 
 		public ulong MediaIDs { set { queries ["media_ids"] = value.ToString (); } }
+
+		public UpdateParameters(string status) {
+			this.Status = status;
+		}
 	}
 
 	public class LookUpParameters : ITwitterParameters
@@ -165,8 +169,8 @@ namespace teruzuki.Twitter.Parameters.Statuses
 
 		public bool Map { set { queries ["map"] = value.ToString (); } }
 
-		public LookUpParameters(List<ulong> ID) {
-			this.ID = ID;
+		public LookUpParameters(List<ulong> id) {
+			this.ID = id;
 		}
 	}
 }
