@@ -4,7 +4,7 @@ namespace teruzuki.Twitter.Model
 {
 	public class Tweet : ITwitterModel
 	{
-		public ulong id;
+		public long id;
 		public string id_str;
 		public string text;
 	}

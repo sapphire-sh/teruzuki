@@ -10,36 +10,37 @@ namespace teruzuki.Twitter.API
 {
 	public class Statuses
 	{
-		public static IEnumerator MentionsTimeline(TwitterClient client, MentionsTimelineParameters parameters, Action<List<Tweet>> callback) {
+		public static IEnumerator MentionsTimeline (TwitterClient client, MentionsTimelineParameters parameters, Action<List<Tweet>> callback)
+		{
 			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/mentions_timeline"), parameters, callback);
 		}
 
-		public static IEnumerator UserTimeline(TwitterClient client, UserTimelineParameters parameters, Action<List<Tweet>> callback) {
+		public static IEnumerator UserTimeline (TwitterClient client, UserTimelineParameters parameters, Action<List<Tweet>> callback)
+		{
 			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/user_timeline"), parameters, callback);
 		}
 
-		public static IEnumerator HomeTimeline(TwitterClient client, HomeTimelineParameters parameters, Action<List<Tweet>> callback) {
+		public static IEnumerator HomeTimeline (TwitterClient client, HomeTimelineParameters parameters, Action<List<Tweet>> callback)
+		{
 			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/home_timeline"), parameters, callback);
 		}
 
-//		public void RetweetsOfMe(int count = 0, long since_id = 0, long max_id = 0)
-//		{
-//			NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
-//			Client.GetTweets("statuses/retweets_of_me", parameters);
-//		}
-//
-//		public static List<Tweet> Retweets(long id, int count = 0)
-//		{
-//			NameValueCollection parameters = GetTimelineCommonParameters(count, 0, 0);
-//			parameters.Add("id", id.ToString());
-//			return Client.GetTweets("statuses/retweets", parameters);
-//		}
+		public static IEnumerator RetweetsOfMe (TwitterClient client, RetweetsOfMeParameters parameters, Action<List<Tweet>> callback)
+		{
+			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/retweets_of_me"), parameters, callback);
+		}
 
-		public static IEnumerator Show(TwitterClient client, ShowParameters parameters, Action<Tweet> callback) {
+		public static IEnumerator Retweets (TwitterClient client, RetweetsParameters parameters, Action<List<Tweet>> callback)
+		{
+			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/retweets"), parameters, callback);
+		}
+
+		public static IEnumerator Show (TwitterClient client, ShowParameters parameters, Action<Tweet> callback)
+		{
 			yield return client.GET<Tweet> (Helper.BuildURL ("statuses/show"), parameters, callback);
 		}
 
-		public static IEnumerator LookUp(TwitterClient client, LookUpParameters parameters, Action<List<Tweet>> callback)
+		public static IEnumerator LookUp (TwitterClient client, LookUpParameters parameters, Action<List<Tweet>> callback)
 		{
 			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/lookup"), parameters, callback);
 		}
@@ -68,7 +69,7 @@ namespace teruzuki.Twitter.API
 		{
 			yield return client.POST<string> (Helper.BuildURL ("statuses/update"), parameters, callback);
 		}
-			/* POST statuses/retweet/:id - require POST function
+		/* POST statuses/retweet/:id - require POST function
 			* POST statuses/unretweet/:id - require POST function
 			* POST statuses/update_with_media - require POST function
 			*/
