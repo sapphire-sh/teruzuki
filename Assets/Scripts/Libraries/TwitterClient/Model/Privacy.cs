@@ -5,7 +5,8 @@ using System.Text;
 
 namespace teruzuki.Twitter.Model
 {
-	public class Configuration
+	public class Privacy : IModel
 	{
+		public string privacy { get; set; }
 	}
 }

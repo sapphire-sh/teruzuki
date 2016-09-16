@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 using teruzuki.Twitter;
+using teruzuki.Twitter.Parameters.Statuses;
 using teruzuki.Twitter.Model;
 
 namespace teruzuki
@@ -37,13 +38,13 @@ namespace teruzuki
 			id_str = GUI.TextField (new Rect (Screen.width - 210, Screen.height - 150, 200, 40), id_str);
 
 			if (GUI.Button (new Rect (Screen.width - 210, Screen.height - 100, 200, 40), "Show Tweet")) {
-				ShowTweet (id_str);
+				ShowTweet (UInt64.Parse(id_str));
 			}
 		}
 
 		private void FetchHomeTimeline()
 		{
-			StartCoroutine (Twitter.API.Statuses.HomeTimeline (ClientManager.Instance.CurrentClient, new Dictionary<string, string>(), FetchHomeTimelineCallback));
+			StartCoroutine (Twitter.API.Statuses.HomeTimeline (ClientManager.Instance.CurrentClient, new HomeTimelineParameters(), FetchHomeTimelineCallback));
 //			s.HomeTimeline();
 //			for (int i = 0; i < tweets.Count; ++i) {
 //				var tweet = tweets [i];
@@ -76,17 +77,16 @@ namespace teruzuki
 //		}
 
 		private void ComposeTweet() {
-			StartCoroutine (Twitter.API.Statuses.Update (ClientManager.Instance.CurrentClient, new Dictionary<string, string>(), ComposeTweetCallback));
+			StartCoroutine (Twitter.API.Statuses.Update (ClientManager.Instance.CurrentClient, new UpdateParameters(), ComposeTweetCallback));
 		}
 
 		private void ComposeTweetCallback(string res) {
 			Debug.Log (res);
 		}
 
-		private void ShowTweet(string id_str) {
-			var queries = new Dictionary<string, string> ();
-			queries.Add ("id", id_str);
-			StartCoroutine (Twitter.API.Statuses.Show (ClientManager.Instance.CurrentClient, queries, ShowTweetCallback));
+		private void ShowTweet(UInt64 id) {
+			var parameters = new ShowParameters (id);
+			StartCoroutine (Twitter.API.Statuses.Show (ClientManager.Instance.CurrentClient, parameters, ShowTweetCallback));
 		}
 
 		private void ShowTweetCallback(Tweet res) {

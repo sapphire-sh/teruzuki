@@ -14,6 +14,8 @@ using UnityEngine;
 
 using LitJson;
 
+using teruzuki.Twitter.Parameters;
+
 namespace teruzuki.Twitter
 {
 	public class TwitterClient
@@ -72,11 +74,9 @@ namespace teruzuki.Twitter
 			callback ();
 		}
 
-		public IEnumerator GET<T>(string url, Dictionary<string, string> queries, Action<T> callback)
+		public IEnumerator GET<T>(string url, ITwitterParameters parameters, Action<T> callback)
 		{
-			if (queries.Count > 0) {
-				url += string.Format ("?{0}", Helper.ComposeQueryString (queries));
-			}
+			url += parameters.ComposeQueryString ();
 
 			Dictionary<string, string> headers = new Dictionary<string, string> ();
 			headers.Add("Authorization", oauth.GenerateAuthzHeader(url, "GET"));
@@ -87,9 +87,9 @@ namespace teruzuki.Twitter
 			callback (JsonMapper.ToObject<T>(www.text));
 		}
 
-		public IEnumerator POST<T>(string url, Dictionary<string, string> queries, Action<T> callback) {
+		public IEnumerator POST<T>(string url, ITwitterParameters parameters, Action<T> callback) {
 			WWWForm wwwForm = new WWWForm ();
-			queries.ToList ().ForEach (x => wwwForm.AddField (x.Key, x.Value));
+			parameters.Queries.ToList ().ForEach (x => wwwForm.AddField (x.Key, x.Value));
 
 			Dictionary<string, string> headers = new Dictionary<string, string> ();
 			headers.Add ("Authorization", oauth.GenerateAuthzHeader (url, "POST"));

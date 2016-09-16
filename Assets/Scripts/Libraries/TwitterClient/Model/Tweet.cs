@@ -5,8 +5,10 @@ using System.Text;
 
 namespace teruzuki.Twitter.Model
 {
-	public class Privacy
+	public class Tweet : IModel
 	{
-		public string privacy { get; set; }
+		public Int64 id { get; set; }
+		public string id_str { get; set; }
+		public string text { get; set; }
 	}
 }

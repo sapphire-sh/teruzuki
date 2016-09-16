@@ -3,30 +3,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+using teruzuki.Twitter.Parameters.Statuses;
 using teruzuki.Twitter.Model;
 
 namespace teruzuki.Twitter.API
 {
 	public class Statuses
 	{
-//		private static NameValueCollection GetTimelineCommonParameters(int count, long since_id, long max_id)
-//		{
-//			NameValueCollection parameters = new NameValueCollection();
-//			if (count > 0)
-//				parameters.Add("count", count.ToString());
-//			if (since_id > 0)
-//				parameters.Add("since_id", since_id.ToString());
-//			if (max_id > 0)
-//				parameters.Add("max_id", max_id.ToString());
-//			return parameters;
-//		}
+		public static IEnumerator MentionsTimeline(TwitterClient client, MentionsTimelineParameters parameters, Action<List<Tweet>> callback) {
+			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/mentions_timeline"), parameters, callback);
+		}
 
-//		public void MentionsTimeline(int count = 0, long since_id = 0, long max_id = 0)
-//		{
-//			NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
-//			Client.Instance.GetTweets("statuses/mentions_timeline", parameters);
-//		}
-//
 //		public static List<Tweet> UserTimeline(long user_id, int count = 0, long since_id = 0, long max_id = 0)
 //		{
 //			NameValueCollection parameters = GetTimelineCommonParameters(count, since_id, max_id);
@@ -47,8 +34,8 @@ namespace teruzuki.Twitter.API
 //			Client.Instance.GetTweets("statuses/home_timeline", parameters);
 //		}
 
-		public static IEnumerator HomeTimeline(TwitterClient client, Dictionary<string, string> queries, Action<List<Tweet>> callback) {
-			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/home_timeline"), queries, callback);
+		public static IEnumerator HomeTimeline(TwitterClient client, HomeTimelineParameters parameters, Action<List<Tweet>> callback) {
+			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/home_timeline"), parameters, callback);
 		}
 
 //		public void RetweetsOfMe(int count = 0, long since_id = 0, long max_id = 0)
@@ -64,13 +51,13 @@ namespace teruzuki.Twitter.API
 //			return Client.GetTweets("statuses/retweets", parameters);
 //		}
 
-		public static IEnumerator Show(TwitterClient client, Dictionary<string, string> queries, Action<Tweet> callback) {
-			yield return client.GET<Tweet> (Helper.BuildURL ("statuses/show"), queries, callback);
+		public static IEnumerator Show(TwitterClient client, ShowParameters parameters, Action<Tweet> callback) {
+			yield return client.GET<Tweet> (Helper.BuildURL ("statuses/show"), parameters, callback);
 		}
 
-		public static IEnumerator LookUp(TwitterClient client, Dictionary<string, string> queries, Action<List<Tweet>> callback)
+		public static IEnumerator LookUp(TwitterClient client, LookUpParameters parameters, Action<List<Tweet>> callback)
 		{
-			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/lookup"), queries, callback);
+			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/lookup"), parameters, callback);
 		}
 
 		/*
@@ -93,9 +80,9 @@ namespace teruzuki.Twitter.API
 			* 
 			* POST statuses/destroy/:id - require POST function */
 
-		public static IEnumerator Update (TwitterClient client, Dictionary<string, string> queries, Action<string> callback)
+		public static IEnumerator Update (TwitterClient client, UpdateParameters parameters, Action<string> callback)
 		{
-			yield return client.POST<string> (Helper.BuildURL ("statuses/update"), queries, callback);
+			yield return client.POST<string> (Helper.BuildURL ("statuses/update"), parameters, callback);
 		}
 			/* POST statuses/retweet/:id - require POST function
 			* POST statuses/unretweet/:id - require POST function

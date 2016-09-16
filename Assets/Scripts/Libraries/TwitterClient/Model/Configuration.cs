@@ -5,8 +5,7 @@ using System.Text;
 
 namespace teruzuki.Twitter.Model
 {
-	public class TOS
+	public class Configuration : IModel
 	{
-		public string tos { get; set; }
 	}
 }

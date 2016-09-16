@@ -5,7 +5,7 @@ using System.Text;
 
 namespace teruzuki.Twitter.Model
 {
-	public class DirectMessage
+	public class DirectMessage : IModel
 	{
 		public long id { get; set; }
 		public string id_str { get; set; }
