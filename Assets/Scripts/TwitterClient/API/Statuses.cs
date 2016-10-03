@@ -10,37 +10,37 @@ namespace teruzuki.Twitter.API
 {
 	public class Statuses
 	{
-		public static IEnumerator MentionsTimeline (TwitterClient client, MentionsTimelineParameters parameters, Action<List<Tweet>> callback)
+		public static IEnumerator MentionsTimeline (Client client, MentionsTimelineParameters parameters, Action<List<Tweet>> callback)
 		{
 			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/mentions_timeline"), parameters, callback);
 		}
 
-		public static IEnumerator UserTimeline (TwitterClient client, UserTimelineParameters parameters, Action<List<Tweet>> callback)
+		public static IEnumerator UserTimeline (Client client, UserTimelineParameters parameters, Action<List<Tweet>> callback)
 		{
 			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/user_timeline"), parameters, callback);
 		}
 
-		public static IEnumerator HomeTimeline (TwitterClient client, HomeTimelineParameters parameters, Action<List<Tweet>> callback)
+		public static IEnumerator HomeTimeline (Client client, HomeTimelineParameters parameters, Action<List<Tweet>> callback)
 		{
 			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/home_timeline"), parameters, callback);
 		}
 
-		public static IEnumerator RetweetsOfMe (TwitterClient client, RetweetsOfMeParameters parameters, Action<List<Tweet>> callback)
+		public static IEnumerator RetweetsOfMe (Client client, RetweetsOfMeParameters parameters, Action<List<Tweet>> callback)
 		{
 			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/retweets_of_me"), parameters, callback);
 		}
 
-		public static IEnumerator Retweets (TwitterClient client, RetweetsParameters parameters, Action<List<Tweet>> callback)
+		public static IEnumerator Retweets (Client client, RetweetsParameters parameters, Action<List<Tweet>> callback)
 		{
 			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/retweets"), parameters, callback);
 		}
 
-		public static IEnumerator Show (TwitterClient client, ShowParameters parameters, Action<Tweet> callback)
+		public static IEnumerator Show (Client client, ShowParameters parameters, Action<Tweet> callback)
 		{
 			yield return client.GET<Tweet> (Helper.BuildURL ("statuses/show"), parameters, callback);
 		}
 
-		public static IEnumerator LookUp (TwitterClient client, LookUpParameters parameters, Action<List<Tweet>> callback)
+		public static IEnumerator LookUp (Client client, LookUpParameters parameters, Action<List<Tweet>> callback)
 		{
 			yield return client.GET<List<Tweet>> (Helper.BuildURL ("statuses/lookup"), parameters, callback);
 		}
@@ -65,7 +65,7 @@ namespace teruzuki.Twitter.API
 			* 
 			* POST statuses/destroy/:id - require POST function */
 
-		public static IEnumerator Update (TwitterClient client, UpdateParameters parameters, Action<Tweet> callback)
+		public static IEnumerator Update (Client client, UpdateParameters parameters, Action<Tweet> callback)
 		{
 			yield return client.POST<Tweet> (Helper.BuildURL ("statuses/update"), parameters, callback);
 		}
