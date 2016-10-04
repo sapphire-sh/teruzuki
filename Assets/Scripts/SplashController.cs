@@ -12,7 +12,7 @@ namespace teruzuki
 	{
 		private IEnumerator initializeCoroutine;
 
-		private Transform logo;
+		public Transform logo;
 
 		void Start ()
 		{
@@ -27,8 +27,10 @@ namespace teruzuki
 
 		private IEnumerator Initialize ()
 		{
-			while (AccountManager.Instance.AccountList.All (x => x.IsLoaded))
-			{
+			AccountManager.Instance.AccountList.ToList ().ForEach (x => {
+				StartCoroutine(x.Initialize());
+			});
+			while (AccountManager.Instance.AccountList.All (x => x.IsLoaded) == false) {
 				yield return new WaitForSeconds (0.1f);
 			}
 			SceneManager.LoadScene ("account");
