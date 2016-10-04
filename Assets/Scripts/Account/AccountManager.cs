@@ -1,53 +1,56 @@
 ﻿using System;
 using System.Linq;
 using System.Collections;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using UnityEngine;
 
-namespace teruzuki.Twitter
+namespace teruzuki
 {
-	[Serializable]
-	public class TokenManager
+	public class AccountManager
 	{
-		[NonSerialized]
-		private static TokenManager instance;
-		
-		public static TokenManager Instance
+		private static AccountManager instance;
+		public static AccountManager Instance
 		{
 			get
 			{
 				if (instance == null)
 				{
-					instance = new TokenManager ();
+					instance = new AccountManager ();
 				}
 				return instance;
 			}
 		}
+		public Account CurrentAccount;
 
-		public List<Token> TokenList
-		{
-			get; private set;
-		}
-		
-		private TokenManager ()
+		private AccountManager ()
 		{
 			Load ();
 		}
 
-		public void AddToken(Token token)
+		private List<Account> accountList;
+		public ReadOnlyCollection<Account> AccountList
 		{
-			TokenList.Add (token);
+			get
+			{
+				return accountList.AsReadOnly ();
+			}
+		}
+
+		public void AddAccount(Account account)
+		{
+			accountList.Add (account);
 			Save ();
 		}
 
-		public void RemoveToken(Token token)
+		public void RemoveAccount(Account account)
 		{
-			TokenList.Remove (token);
+			accountList.Remove (account);
 			Save ();
 		}
-		 
+
 		private void Load ()
 		{
 			Debug.Log (Application.persistentDataPath);
@@ -55,12 +58,12 @@ namespace teruzuki.Twitter
 			{
 				BinaryFormatter binaryFormatter = new BinaryFormatter ();
 				FileStream fileStream = File.Open (Application.persistentDataPath + "/" + Constants.Token.FILE_NAME, FileMode.Open);
-				TokenList = (List<Token>)binaryFormatter.Deserialize (fileStream);
+				accountList = (List<Account>)binaryFormatter.Deserialize (fileStream);
 				fileStream.Close ();
 			}
 			else
 			{
-				TokenList = new List<Token> ();
+				accountList = new List<Account> ();
 			}
 		}
 
@@ -68,7 +71,7 @@ namespace teruzuki.Twitter
 		{
 			BinaryFormatter binaryFormatter = new BinaryFormatter ();
 			FileStream fileStream = File.Create (Application.persistentDataPath + "/" + Constants.Token.FILE_NAME);
-			binaryFormatter.Serialize (fileStream, TokenList);
+			binaryFormatter.Serialize (fileStream, accountList);
 			fileStream.Close ();
 		}
 	}

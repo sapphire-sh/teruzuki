@@ -1,15 +1,18 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+using teruzuki.Twitter.Parameters.Account;
+using teruzuki.Twitter.Model;
 
 namespace teruzuki.Twitter.API
 {
 	public static class Account
 	{
-		public static string VerifyCredentials()
+		public static IEnumerator VerifyCredentials (Client client, VerifyCredentialsParameters parameters, Action<User> callback)
 		{
-			return "";
-//			return Client.Instance.Get("https://api.twitter.com/1.1/account/verify_credentials.json");
+			yield return client.GET<User> (Helper.BuildURL ("account/verify_credentials"), parameters, callback);
 		}
 	}
 }
