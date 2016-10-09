@@ -3,10 +3,8 @@ using System.Linq;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using UnityEngine;
-using SQLite4Unity3d;
 
 namespace teruzuki
 {
@@ -27,7 +25,8 @@ namespace teruzuki
 
 		private AccountManager ()
 		{
-			LoadDatabase ();
+			accountList = new List<Account> ();
+//			LoadDatabase ();
 		}
 
 		private List<Account> accountList;
@@ -38,14 +37,14 @@ namespace teruzuki
 			}
 		}
 
-		private string dbPath = Application.persistentDataPath + "/teruzuki.sqlite";
-		private SQLiteConnection conn;
+/*		private string dbPath = Application.persistentDataPath + "/teruzuki.sqlite";
+		SqliteDatabase db;
 
 		private void CreateDatabase ()
 		{
 			try {
 				Debug.Log (Application.dataPath);
-				conn = new SQLiteConnection (dbPath, SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create);
+				db = new SqliteDatabase (dbPath);
 
 				conn.CreateTable<DBAccount> ();
 			} catch (Exception e) {
@@ -102,6 +101,6 @@ namespace teruzuki
 			} catch (Exception e) {
 				Debug.Log (e);
 			}
-		}
+		}*/
 	}
 }

@@ -95,7 +95,14 @@ namespace teruzuki.Twitter
 			WWW www = new WWW (url, null, headers);
 			yield return www;
 
-			callback (JsonUtility.FromJson<T> (www.text));
+			try {
+				callback (JsonUtility.FromJson<T> (www.text));
+			}
+			catch (Exception e)
+			{
+				Debug.Log (www.text);
+				Debug.Log (e);
+			}
 		}
 
 		public IEnumerator POST<T> (string url, Parameters.ITwitterParameters parameters, Action<T> callback)
@@ -112,7 +119,15 @@ namespace teruzuki.Twitter
 			WWW www = new WWW (url, wwwForm.data, headers);
 			yield return www;
 
-			callback (JsonUtility.FromJson<T> (www.text));
+			try
+			{
+				callback (JsonUtility.FromJson<T> (www.text));
+			}
+			catch (Exception e)
+			{
+				Debug.Log (www.text);
+				Debug.Log (e);
+			}
 		}
 	}
 }

@@ -140,7 +140,7 @@ namespace teruzuki
 
 		private void VerifyCredentialsCallback(Twitter.Model.User user) {
 			var account = new Account (client, user);
-			AccountManager.Instance.InsertAccount (account);
+//			AccountManager.Instance.InsertAccount (account);
 
 			StartCoroutine (account.Initialize (AccountInitializeCallback));
 		}

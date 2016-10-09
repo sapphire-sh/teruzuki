@@ -1,12 +1,10 @@
 ﻿using System;
 using UnityEngine;
-using SQLite4Unity3d;
 
 namespace teruzuki
 {
 	public class DBAccount
 	{
-		[PrimaryKey]
 		public string Id { get; set; }
 		public string AccessToken { get; set; }
 		public string AccessTokenSecret { get; set; }

@@ -3,4 +3,26 @@
 				if (q.Length == 2)
 				{
 					dict.Add (q[0], q[1]);
-				}			}			return dict;		}		public static string ComposeQueryString(Dictionary<string, string> queries) {			var stringBuilder = new StringBuilder ();			foreach (var query in queries) {				stringBuilder.Append (string.Format ("{0}={1}&", query.Key, query.Value));			}			return stringBuilder.ToString ().TrimEnd('&');		}	}}
+				}			}			return dict;		}		public static string ComposeQueryString(Dictionary<string, string> queries) {			var stringBuilder = new StringBuilder ();			foreach (var query in queries) {				stringBuilder.Append (string.Format ("{0}={1}&", query.Key, query.Value));			}			return stringBuilder.ToString ().TrimEnd('&');		}
+
+		public static class JsonParser
+		{
+			public static T[] FromJson<T> (string json)
+			{
+				Wrapper<T> wrapper = UnityEngine.JsonUtility.FromJson<Wrapper<T>> (json);
+				return wrapper.items;
+			}
+
+			public static string ToJson<T> (T[] array)
+			{
+				Wrapper<T> wrapper = new Wrapper<T> ();
+				wrapper.items = array;
+				return UnityEngine.JsonUtility.ToJson (wrapper);
+			}
+
+			[Serializable]
+			private class Wrapper<T>
+			{
+				public T[] items;
+			}
+		}	}}
