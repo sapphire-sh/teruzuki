@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Newtonsoft.Json;
 
 using teruzuki.Twitter;
 
@@ -96,7 +97,7 @@ namespace teruzuki.Twitter
 			yield return www;
 
 			try {
-				callback (JsonUtility.FromJson<T> (www.text));
+				callback (JsonConvert.DeserializeObject<T> (www.text));
 			}
 			catch (Exception e)
 			{
@@ -121,7 +122,7 @@ namespace teruzuki.Twitter
 
 			try
 			{
-				callback (JsonUtility.FromJson<T> (www.text));
+				callback (JsonConvert.DeserializeObject<T> (www.text));
 			}
 			catch (Exception e)
 			{

@@ -7,5 +7,6 @@ namespace teruzuki.Twitter.Model
 		public long id;
 		public string id_str;
 		public string text;
+		public User user;
 	}
 }

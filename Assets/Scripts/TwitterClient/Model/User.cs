@@ -4,7 +4,7 @@ namespace teruzuki.Twitter.Model
 {
 	public class User : ITwitterModel
 	{
-		public long id;
+		public UInt64 id;
 		public string name;
 		public string id_str;
 		public string screen_name;
