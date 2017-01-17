@@ -12,7 +12,7 @@ namespace teruzuki.Twitter.API
 	{
 		public static IEnumerator VerifyCredentials (Client client, VerifyCredentialsParameters parameters, Action<User> callback)
 		{
-			yield return client.GET<User> (Helper.BuildURL ("account/verify_credentials"), parameters, callback);
+			yield return client.GET<User> (Helper.BuildRESTURL ("account/verify_credentials"), parameters, callback);
 		}
 	}
 }

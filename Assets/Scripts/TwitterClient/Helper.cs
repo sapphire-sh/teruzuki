@@ -8,9 +8,14 @@ namespace teruzuki.Twitter
 {
 	public static class Helper
 	{
-		public static string BuildURL (string endpoint)
+		public static string BuildRESTURL (string endpoint)
 		{
-			return string.Format ("{0}{1}.json", Constants.URL.BASE_URL, endpoint);
+			return string.Format ("{0}{1}.json", Constants.URL.REST_BASE_URL, endpoint);
+		}
+
+		public static string BuildUserStreamURL (string endpoint)
+		{
+			return string.Format ("{0}{1}.json", Constants.URL.USERSTREAM_BASE_URL, endpoint);
 		}
 
 		public static Dictionary<string, string> ParseQueryString (string queryString)
